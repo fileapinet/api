@@ -1,16 +1,16 @@
 {
-    "name": "symfony/framework-standard-edition",
+    "name": "amyboyd/convert",
     "license": "MIT",
     "type": "project",
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
-        "psr-0": { "": "src/", "SymfonyStandard": "app/" }
+        "psr-0": { "": "src/", "SymfonyStandard": "app/" },
+        "psr-4": { "Partnermarketing\\FileSystemBundle\\": "vendor/partnermarketing/file-system-bundle/src"}
     },
     "require": {
         "php": ">=5.5.0",
         "ext-gearman": "*",
         "symfony/symfony": "2.5.*",
-        "aws/aws-sdk-php": "2.4.*",
         "doctrine/doctrine-fixtures-bundle": "2.2.*",
         "doctrine/data-fixtures": "1.0.*",
         "doctrine/mongodb-odm": "1.0.0-BETA9",
@@ -21,8 +21,23 @@
         "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
-        "mmoreram/gearman-bundle": "2.3.*"
+        "mmoreram/gearman-bundle": "2.3.*",
+        "partnermarketing/file-system-bundle": "dev-local"
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "partnermarketing/file-system-bundle",
+                "version": "dev-local",
+                "source": {
+                    "url": "/opt/git/FileSystemBundle.git",
+                    "type": "git",
+                    "reference": "master"
+                }
+           }
+        }
+    ],
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
     },

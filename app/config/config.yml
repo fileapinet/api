@@ -64,3 +64,16 @@ services:
         class: Mongo
         factory_service: mongo.connection
         factory_method: getMongo
+
+partnermarketing_file_system:
+    default_file_system: local_storage
+    config:
+        amazon_s3:
+            key: xxxxxxxx
+            secret: xxxxxxxx
+            bucket: xxxxxxxx
+            region: xxxxxxxx
+        local_storage:
+            path: /home/convert/project/web/file-system
+            url: 'http://convert.dev/file-system'
+    tmp_dir: /tmp
