@@ -2,6 +2,7 @@
 
 namespace Convert\ImageBundle\Workers;
 
+use ZipArchive;
 use Mmoreram\GearmanBundle\Driver\Gearman;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 use Partnermarketing\FileSystemBundle\Factory\FileSystemFactory;
@@ -24,6 +25,18 @@ class ConvertImageWorker
     private $fileSystem;
 
     private $tmpDir;
+
+    private static $targetFormatExtensions = [
+        'aai',
+        'bmp',
+        'gif',
+        'jpg',
+        'pdf',
+        'png',
+        'raw',
+        'tiff',
+        'webp',
+    ];
 
     public function __construct(ManagerRegistry $mongodb, LoggerInterface $logger,
         FileSystemFactory $fileSystemFactory, $tmpDir)
@@ -48,22 +61,22 @@ class ConvertImageWorker
         $orderId = $workload['orderId'];
         $tmpFile = $this->fileSystem->copyToLocalTemporaryFile($workload['fileSystemPath']);
 
-        $this->convertFileToFormat($tmpFile, 'aai', $orderId);
-        $this->convertFileToFormat($tmpFile, 'bmp', $orderId);
-        $this->convertFileToFormat($tmpFile, 'gif', $orderId);
-        $this->convertFileToFormat($tmpFile, 'jpg', $orderId);
-        $this->convertFileToFormat($tmpFile, 'pdf', $orderId);
-        $this->convertFileToFormat($tmpFile, 'png', $orderId);
-        $this->convertFileToFormat($tmpFile, 'raw', $orderId);
-        $this->convertFileToFormat($tmpFile, 'tiff', $orderId);
-        $this->convertFileToFormat($tmpFile, 'webp', $orderId);
+        $zipFile = tempnam($this->tmpDir, 'ConvertImageWorker') . '.zip';
+        $zipArchive = new ZipArchive();
+        $zipArchive->open($zipFile, ZipArchive::CREATE);
+
+        foreach (self::$targetFormatExtensions as $targetFormatExtension) {
+            $this->convertFileToFormat($tmpFile, $targetFormatExtension, $orderId, $zipArchive);
+        }
+
+        $this->saveZipToFileSystem($zipArchive, $zipFile, $orderId);
 
         $this->logger->log(LogLevel::INFO, 'Finished', $workload);
 
         return $job->sendComplete('1');
     }
 
-    private function convertFileToFormat($file, $targetFormatExtension, $orderId)
+    private function convertFileToFormat($file, $targetFormatExtension, $orderId, ZipArchive $zipArchive)
     {
         $targetFile = tempnam($this->tmpDir, 'ConvertImageWorker') . '.' . $targetFormatExtension;
         `convert $file $targetFile`;
@@ -74,5 +87,14 @@ class ConvertImageWorker
             'format' => $targetFormatExtension,
             'fileSystemPath' => $fileSystemPath
         ]);
+
+        $zipArchive->addFile($targetFile, 'image.' . $targetFormatExtension);
+    }
+
+    private function saveZipToFileSystem(ZipArchive $zipArchive, $zipFile, $orderId)
+    {
+        $zipArchive->close();
+        $fileSystemPath = $orderId . '/images.zip';
+        $this->fileSystem->write($fileSystemPath, $zipFile);
     }
 }

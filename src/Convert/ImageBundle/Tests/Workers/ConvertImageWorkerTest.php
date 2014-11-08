@@ -47,9 +47,10 @@ class ConvertImageWorkerTest extends \PHPUnit_Framework_TestCase
         $worker->createImages($fakeGearmanJob);
 
         $filesInFileSystem = $this->fileSystem->getFiles('123/');
-        $this->assertCount(9, $filesInFileSystem);
+        $this->assertCount(10, $filesInFileSystem);
         $this->assertContains('123/image.aai', $filesInFileSystem);
         $this->assertContains('123/image.tiff', $filesInFileSystem);
         $this->assertContains('123/image.webp', $filesInFileSystem);
+        $this->assertContains('123/images.zip', $filesInFileSystem);
     }
 }
