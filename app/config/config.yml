@@ -77,3 +77,12 @@ partnermarketing_file_system:
             path: /home/convert/project/web/file-system
             url: 'http://convert.dev/file-system'
     tmp_dir: /tmp
+
+gearman:
+    bundles:
+        ImageBundle:
+            name: ConvertImageBundle
+            active: true
+            include:
+                - Workers
+    servers: %gearman_servers%

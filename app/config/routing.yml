@@ -1,0 +1,4 @@
+convert_image:
+    resource: "@ConvertImageBundle/Resources/config/routing.yml"
+    prefix:   /
+

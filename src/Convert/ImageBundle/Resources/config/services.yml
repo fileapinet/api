@@ -1,0 +1,8 @@
+services:
+    convert_image.convert_image_worker:
+        class: Convert\ImageBundle\Workers\ConvertImageWorker
+        arguments:
+            - @doctrine_mongodb
+            - @monolog.logger
+            - @partnermarketing_file_system.factory
+            - %partnermarketing_file_system.tmp_dir%
