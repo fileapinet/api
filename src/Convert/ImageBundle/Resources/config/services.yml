@@ -6,3 +6,11 @@ services:
             - @monolog.logger
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
+
+    convert_image.reduce_image_file_size_worker:
+        class: Convert\ImageBundle\Workers\ReduceImageFileSizeWorker
+        arguments:
+            - @doctrine_mongodb
+            - @monolog.logger
+            - @partnermarketing_file_system.factory
+            - %partnermarketing_file_system.tmp_dir%
