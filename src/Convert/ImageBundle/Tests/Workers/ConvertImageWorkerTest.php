@@ -3,30 +3,22 @@
 namespace Convert\ImageBundle\Tests\Workers;
 
 use Convert\ImageBundle\Workers\ConvertImageWorker;
+use Convert\Tests\Base\BaseUnitTest;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 
-require_once dirname(__DIR__).'/../../../../app/AppKernel.php';
+require_once dirname(__DIR__) . '/../../../../app/AppKernel.php';
 
 /**
  * Tests for the ConvertImageWorker.
  */
-class ConvertImageWorkerTest extends \PHPUnit_Framework_TestCase
+class ConvertImageWorkerTest extends BaseUnitTest
 {
-    protected $kernel;
-    protected $container;
+    protected $fileSystem;
 
     public function setUp()
     {
-        $this->kernel = new \AppKernel('test', true);
-        $this->kernel->boot();
-        $this->container = $this->kernel->getContainer();
+        parent::setUp();
         $this->fileSystem = new FileSystem($this->container->get('partnermarketing_file_system.factory')->build());
-    }
-
-    public function tearDown()
-    {
-        $this->kernel->shutdown();
-        parent::tearDown();
     }
 
     public function testCreateImagesFromJpeg()

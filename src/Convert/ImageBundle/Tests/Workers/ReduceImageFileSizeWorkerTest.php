@@ -3,6 +3,7 @@
 namespace Convert\ImageBundle\Tests\Workers;
 
 use Convert\ImageBundle\Workers\ReduceImageFileSizeWorker;
+use Convert\Tests\Base\BaseUnitTest;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 
 require_once dirname(__DIR__).'/../../../../app/AppKernel.php';
@@ -10,33 +11,30 @@ require_once dirname(__DIR__).'/../../../../app/AppKernel.php';
 /**
  * Tests for the ReduceImageFileSizeWorker.
  */
-class ReduceImageFileSizeWorkerTest extends \PHPUnit_Framework_TestCase
+class ReduceImageFileSizeWorkerTest extends BaseUnitTest
 {
-    protected $kernel;
-    protected $container;
+    protected $fileSystem;
 
     public function setUp()
     {
-        $this->kernel = new \AppKernel('test', true);
-        $this->kernel->boot();
-        $this->container = $this->kernel->getContainer();
+        parent::setUp();
         $this->fileSystem = new FileSystem($this->container->get('partnermarketing_file_system.factory')->build());
     }
 
-    public function tearDown()
-    {
-        $this->kernel->shutdown();
-        parent::tearDown();
-    }
-
+    /**
+     * @group slow
+     */
     public function testReduceImageFileSizeFromJpg()
     {
-        $this->testReduceImageFileSize('jpg');
+        $this->assertReduceImageFileSize('jpg');
     }
 
+    /**
+     * @group slow
+     */
     public function testReduceImageFileSizeFromPng()
     {
-        $this->testReduceImageFileSize('png');
+        $this->assertReduceImageFileSize('png');
     }
 
     public function testReduceImageFileSizeFromUnsupportedFileExtension()
@@ -56,7 +54,7 @@ class ReduceImageFileSizeWorkerTest extends \PHPUnit_Framework_TestCase
         $worker->reduceImageFileSize($fakeGearmanJob);
     }
 
-    private function testReduceImageFileSize($fileType)
+    private function assertReduceImageFileSize($fileType)
     {
         $inputFile = $this->fileSystem->writeContent('ReduceImageFileSizeWorkerTest/test.' . $fileType, file_get_contents(__DIR__ . '/test.' . $fileType));
 
@@ -75,6 +73,7 @@ class ReduceImageFileSizeWorkerTest extends \PHPUnit_Framework_TestCase
         $worker->reduceImageFileSize($fakeGearmanJob);
 
         $filesInFileSystem = $this->fileSystem->getFiles('123/');
+        $this->assertCount(1, $filesInFileSystem);
         $this->assertContains('123/reduced.' . $fileType, $filesInFileSystem);
         $this->assertLessThan(35000, strlen($this->fileSystem->read('123/reduced.' . $fileType)));
     }
