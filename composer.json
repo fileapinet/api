@@ -33,7 +33,7 @@
                 "source": {
                     "url": "/opt/git/FileSystemBundle.git",
                     "type": "git",
-                    "reference": "master"
+                    "reference": "0.1.0"
                 }
            }
         }
