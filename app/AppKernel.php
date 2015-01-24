@@ -18,7 +18,7 @@ class AppKernel extends Kernel
             new Liip\DoctrineCacheBundle\LiipDoctrineCacheBundle(),
             new Mmoreram\GearmanBundle\GearmanBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new Convert\ImageBundle\ConvertImageBundle(),
+            new FileApi\ImageBundle\FileApiImageBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

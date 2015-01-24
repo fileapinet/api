@@ -1,9 +1,9 @@
 <?php
 
-namespace Convert\ImageBundle\Tests\Workers;
+namespace FileApi\ImageBundle\Tests\Workers;
 
-use Convert\ImageBundle\Workers\ResizeImageDimensionsWorker;
-use Convert\Tests\Base\BaseUnitTest;
+use FileApi\ImageBundle\Workers\ResizeImageDimensionsWorker;
+use FileApi\Tests\Base\BaseUnitTest;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 
 require_once dirname(__DIR__).'/../../../../app/AppKernel.php';
@@ -37,7 +37,7 @@ class ResizeImageDimensionsWorkerTest extends BaseUnitTest
             }));
         $fakeGearmanJob->expects($this->once())->method('sendComplete');
 
-        $worker = $this->container->get('convert_image.resize_image_dimensions_worker');
+        $worker = $this->container->get('file_api_image.resize_image_dimensions_worker');
         $worker->resizeImageDimensions($fakeGearmanJob);
 
         $filesInFileSystem = $this->fileSystem->getFiles('123/');

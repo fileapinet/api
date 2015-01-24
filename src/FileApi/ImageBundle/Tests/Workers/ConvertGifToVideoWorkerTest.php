@@ -1,9 +1,9 @@
 <?php
 
-namespace Convert\ImageBundle\Tests\Workers;
+namespace FileApi\ImageBundle\Tests\Workers;
 
-use Convert\ImageBundle\Workers\ConvertGifToVideoWorker;
-use Convert\Tests\Base\BaseUnitTest;
+use FileApi\ImageBundle\Workers\ConvertGifToVideoWorker;
+use FileApi\Tests\Base\BaseUnitTest;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 
 require_once dirname(__DIR__) . '/../../../../app/AppKernel.php';
@@ -38,7 +38,7 @@ class ConvertGifToVideoWorkerTest extends BaseUnitTest
             }));
         $fakeGearmanJob->expects($this->once())->method('sendComplete');
 
-        $worker = $this->container->get('convert_image.convert_gif_to_video_worker');
+        $worker = $this->container->get('file_api_image.convert_gif_to_video_worker');
         $worker->createVideos($fakeGearmanJob);
 
         $filesInFileSystem = $this->fileSystem->getFiles('123/');

@@ -1,4 +1,4 @@
-convert_image:
-    resource: "@ConvertImageBundle/Resources/config/routing.yml"
+file_api_image:
+    resource: "@FileApiImageBundle/Resources/config/routing.yml"
     prefix:   /
 

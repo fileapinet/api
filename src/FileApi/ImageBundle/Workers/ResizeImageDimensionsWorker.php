@@ -1,6 +1,6 @@
 <?php
 
-namespace Convert\ImageBundle\Workers;
+namespace FileApi\ImageBundle\Workers;
 
 use Mmoreram\GearmanBundle\Driver\Gearman;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Convert\Tests\Base;
+namespace FileApi\Tests\Base;
 
 use Partnermarketing\FileSystemBundle\ServerFileSystem\ServerFileSystem;
 

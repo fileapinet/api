@@ -74,14 +74,14 @@ partnermarketing_file_system:
             bucket: xxxxxxxx
             region: xxxxxxxx
         local_storage:
-            path: /home/convert/project/web/file-system
-            url: 'http://convert.dev/file-system'
+            path: /home/fileapi/project/web/file-system
+            url: 'http://fileapi.dev/file-system'
     tmp_dir: /tmp
 
 gearman:
     bundles:
         ImageBundle:
-            name: ConvertImageBundle
+            name: FileApiImageBundle
             active: true
             include:
                 - Workers
