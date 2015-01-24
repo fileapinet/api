@@ -70,6 +70,9 @@ class ReduceImageFileSizeWorker extends AbstractWorker
                 '%quality%' => escapeshellarg($quality),
             ]);
             shell_exec($parameterisedCommand);
+            if (!$tmpFile) {
+                throw new \Exception('File not created: ' . $tmpFile);
+            }
             $resultSize = filesize($tmpFile);
 
             if ($resultSize >= $targetMaxSizeInBytes) {
@@ -80,6 +83,12 @@ class ReduceImageFileSizeWorker extends AbstractWorker
         $this->fileSystem->write($targetFileSystemPath, $tmpFile);
         unlink($tmpFile);
         unlink($originalFile);
+
+        $order->addResultAttribute('newFile', $this->fileSystem->getURL($targetFileSystemPath));
+        $order->addResultAttribute('newSize', $resultSize);
+        $order->addResultAttribute('originalSize', $originalSize);
+        $this->dm->persist($order);
+        $this->dm->flush();
 
         $this->logger->log(LogLevel::INFO, 'Reduced image file size', [
             'originalSize' => $originalSize,

@@ -24,8 +24,8 @@ class ResizeImageDimensionsWorker extends AbstractWorker
     {
         list($workload, $order) = $this->init($job);
 
-        $targetWidth = $workload['targetWidth'];
-        $targetHeight = $workload['targetHeight'];
+        $targetWidth = (int) $workload['targetWidth'];
+        $targetHeight = (int) $workload['targetHeight'];
         $originalFile = $this->fileSystem->copyToLocalTemporaryFile($order->getFileSystemPath());
         $tmpFile = tempnam($this->tmpDir, 'ResizeImageDimensionsWorker');
 
@@ -43,6 +43,10 @@ class ResizeImageDimensionsWorker extends AbstractWorker
 
         unlink($tmpFile);
         unlink($originalFile);
+
+        $order->addResultAttribute('resizedImage', $this->fileSystem->getURL($targetFileSystemPath));
+        $this->dm->persist($order);
+        $this->dm->flush();
 
         $this->logger->log(LogLevel::INFO, 'Resized image dimensions', [
             'targetWidth' => $targetWidth,

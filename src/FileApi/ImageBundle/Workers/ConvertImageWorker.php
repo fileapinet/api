@@ -49,6 +49,9 @@ class ConvertImageWorker extends AbstractWorker
 
         $this->saveZipToFileSystem($zipArchive, $zipFile, $order);
 
+        $this->dm->persist($order);
+        $this->dm->flush();
+
         $this->logger->log(LogLevel::INFO, 'Finished', $workload);
 
         return $job->sendComplete('1');
@@ -67,6 +70,8 @@ class ConvertImageWorker extends AbstractWorker
         ]);
 
         $zipArchive->addFile($targetFile, 'image.' . $targetFormatExtension);
+
+        $order->addResultAttribute($targetFormatExtension, $this->fileSystem->getURL($fileSystemPath));
     }
 
     private function saveZipToFileSystem(ZipArchive $zipArchive, $zipFile, $order)
@@ -74,5 +79,7 @@ class ConvertImageWorker extends AbstractWorker
         $zipArchive->close();
         $fileSystemPath = $order->getId() . '/images.zip';
         $this->fileSystem->write($fileSystemPath, $zipFile);
+
+        $order->addResultAttribute('allImagesInAZip', $this->fileSystem->getURL($fileSystemPath));
     }
 }

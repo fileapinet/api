@@ -24,6 +24,44 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/convert-image-to-other-formats")
+     */
+    public function convertImageToOtherFormatsAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+        $order = $this->runWorker('FileApiImageBundleWorkersConvertImageWorker~createImages', $order);
+
+        return new JsonResponse($order->getResult());
+    }
+
+    /**
+     * @Route("/reduce-image-file-size")
+     */
+    public function reduceImageFileSizeAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+        $order = $this->runWorker('FileApiImageBundleWorkersReduceImageFileSizeWorker~reduceImageFileSize', $order, [
+            'targetMaxSizeInBytes' => $request->query->get('targetMaxSizeInBytes'),
+        ]);
+
+        return new JsonResponse($order->getResult());
+    }
+
+    /**
+     * @Route("/resize-image")
+     */
+    public function resizeImageAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+        $order = $this->runWorker('FileApiImageBundleWorkersResizeImageDimensionsWorker~resizeImageDimensions', $order, [
+            'targetWidth' => $request->query->get('targetWidth'),
+            'targetHeight' => $request->query->get('targetHeight'),
+        ]);
+
+        return new JsonResponse($order->getResult());
+    }
+
+    /**
      * @return \FileApi\ApiBundle\Document\Order
      */
     private function getOrderFromRequest(Request $request)
