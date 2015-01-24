@@ -28,12 +28,13 @@ class ConvertGifToVideoWorkerTest extends BaseUnitTest
     {
         $gif = $this->fileSystem->writeContent('ConvertGifToVideoWorkerTest/test.gif', file_get_contents(__DIR__ . '/test.gif'));
 
+        $order = $this->getOrder($gif);
+
         $fakeGearmanJob = $this->getMockBuilder('\GearmanJob')->disableOriginalConstructor()->getMock();
         $fakeGearmanJob->expects($this->any())->method('workload')
-            ->will($this->returnCallback(function () use ($gif) {
+            ->will($this->returnCallback(function () use ($gif, $order) {
                 return json_encode([
-                    'fileSystemPath' => $gif,
-                    'orderId' => 123,
+                    'orderId' => $order->getId(),
                 ]);
             }));
         $fakeGearmanJob->expects($this->once())->method('sendComplete');
@@ -41,11 +42,11 @@ class ConvertGifToVideoWorkerTest extends BaseUnitTest
         $worker = $this->container->get('file_api_image.convert_gif_to_video_worker');
         $worker->createVideos($fakeGearmanJob);
 
-        $filesInFileSystem = $this->fileSystem->getFiles('123/');
+        $filesInFileSystem = $this->fileSystem->getFiles($order->getId() . '/');
         $this->assertCount(4, $filesInFileSystem);
-        $this->assertContains('123/video.webm', $filesInFileSystem);
-        $this->assertContains('123/video.mp4', $filesInFileSystem);
-        $this->assertContains('123/video.avi', $filesInFileSystem);
-        $this->assertContains('123/videos.zip', $filesInFileSystem);
+        $this->assertContains($order->getId() . '/video.webm', $filesInFileSystem);
+        $this->assertContains($order->getId() . '/video.mp4', $filesInFileSystem);
+        $this->assertContains($order->getId() . '/video.avi', $filesInFileSystem);
+        $this->assertContains($order->getId() . '/videos.zip', $filesInFileSystem);
     }
 }

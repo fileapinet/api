@@ -4,10 +4,8 @@ namespace FileApi\ImageBundle\Workers;
 
 use Mmoreram\GearmanBundle\Driver\Gearman;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
-use Partnermarketing\FileSystemBundle\Factory\FileSystemFactory;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use FileApi\FileBundle\Workers\AbstractWorker;
 
 /**
  * @Gearman\Work(
@@ -15,25 +13,8 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
  *     defaultMethod = "doBackground"
  * )
  */
-class ResizeImageDimensionsWorker
+class ResizeImageDimensionsWorker extends AbstractWorker
 {
-    protected $dm;
-
-    protected $logger;
-
-    private $fileSystem;
-
-    private $tmpDir;
-
-    public function __construct(ManagerRegistry $mongodb, LoggerInterface $logger,
-        FileSystemFactory $fileSystemFactory, $tmpDir)
-    {
-        $this->dm = $mongodb->getManager();
-        $this->logger = $logger;
-        $this->fileSystem = new FileSystem($fileSystemFactory->build());
-        $this->tmpDir = $tmpDir;
-    }
-
     /**
      * @param  \GearmanJob $job
      * @return boolean
@@ -41,14 +22,11 @@ class ResizeImageDimensionsWorker
      */
     public function resizeImageDimensions(\GearmanJob $job)
     {
-        $workload = json_decode($job->workload(), true);
+        list($workload, $order) = $this->init($job);
 
-        $this->logger->log(LogLevel::INFO, 'Request received', $workload);
-
-        $orderId = $workload['orderId'];
         $targetWidth = $workload['targetWidth'];
         $targetHeight = $workload['targetHeight'];
-        $originalFile = $this->fileSystem->copyToLocalTemporaryFile($workload['fileSystemPath']);
+        $originalFile = $this->fileSystem->copyToLocalTemporaryFile($order->getFileSystemPath());
         $tmpFile = tempnam($this->tmpDir, 'ResizeImageDimensionsWorker');
 
         $command = 'convert -resize %targetWidth%x%targetHeight%! %originalFile% %tmpFile%';
@@ -60,7 +38,7 @@ class ResizeImageDimensionsWorker
         ]);
         shell_exec($parameterisedCommand);
 
-        $targetFileSystemPath = $orderId . '/resized';
+        $targetFileSystemPath = $order->getId() . '/resized';
         $this->fileSystem->write($targetFileSystemPath, $tmpFile);
 
         unlink($tmpFile);
@@ -70,7 +48,7 @@ class ResizeImageDimensionsWorker
             'targetWidth' => $targetWidth,
             'targetHeight' => $targetHeight,
             'resultFileSystemPath' => $targetFileSystemPath,
-            'orderId' => $orderId,
+            'orderId' => $order->getId(),
         ]);
 
         return $job->sendComplete('1');

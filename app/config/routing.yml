@@ -1,4 +1,4 @@
-file_api_image:
-    resource: "@FileApiImageBundle/Resources/config/routing.yml"
-    prefix:   /
-
+file_api:
+    resource: "@FileApiApiBundle/Controller/"
+    type:     annotation
+    prefix:   /v1

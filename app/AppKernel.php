@@ -19,6 +19,8 @@ class AppKernel extends Kernel
             new Mmoreram\GearmanBundle\GearmanBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new FileApi\ImageBundle\FileApiImageBundle(),
+            new FileApi\FileBundle\FileApiFileBundle(),
+            new FileApi\ApiBundle\FileApiApiBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

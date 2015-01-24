@@ -3,12 +3,11 @@
 namespace FileApi\ImageBundle\Workers;
 
 use ZipArchive;
+use FileApi\ApiBundle\Document\Order;
 use Mmoreram\GearmanBundle\Driver\Gearman;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
-use Partnermarketing\FileSystemBundle\Factory\FileSystemFactory;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use FileApi\FileBundle\Workers\AbstractWorker;
 
 /**
  * @Gearman\Work(
@@ -16,30 +15,13 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
  *     defaultMethod = "doBackground"
  * )
  */
-class ConvertGifToVideoWorker
+class ConvertGifToVideoWorker extends AbstractWorker
 {
-    protected $dm;
-
-    protected $logger;
-
-    private $fileSystem;
-
-    private $tmpDir;
-
     private static $targetFormatExtensions = [
         'webm',
         'avi',
         'mp4',
     ];
-
-    public function __construct(ManagerRegistry $mongodb, LoggerInterface $logger,
-        FileSystemFactory $fileSystemFactory, $tmpDir)
-    {
-        $this->dm = $mongodb->getManager();
-        $this->logger = $logger;
-        $this->fileSystem = new FileSystem($fileSystemFactory->build());
-        $this->tmpDir = $tmpDir;
-    }
 
     /**
      * @param  \GearmanJob $job
@@ -48,33 +30,33 @@ class ConvertGifToVideoWorker
      */
     public function createVideos(\GearmanJob $job)
     {
-        $workload = json_decode($job->workload(), true);
+        list($workload, $order) = $this->init($job);
 
-        $this->logger->log(LogLevel::INFO, 'Request received', $workload);
-
-        $orderId = $workload['orderId'];
-        $tmpFile = $this->fileSystem->copyToLocalTemporaryFile($workload['fileSystemPath']);
+        $tmpFile = $this->fileSystem->copyToLocalTemporaryFile($order->getFileSystemPath());
 
         $zipFile = tempnam($this->tmpDir, 'ConvertGifToVideoWorker') . '.zip';
         $zipArchive = new ZipArchive();
         $zipArchive->open($zipFile, ZipArchive::CREATE);
 
         foreach (self::$targetFormatExtensions as $targetFormatExtension) {
-            $this->convertFileToFormat($tmpFile, $targetFormatExtension, $orderId, $zipArchive);
+            $this->convertFileToFormat($tmpFile, $targetFormatExtension, $zipArchive, $order);
         }
 
-        $this->saveZipToFileSystem($zipArchive, $zipFile, $orderId);
+        $this->saveZipToFileSystem($zipArchive, $zipFile, $order);
+
+        $this->dm->persist($order);
+        $this->dm->flush();
 
         $this->logger->log(LogLevel::INFO, 'Finished', $workload);
 
         return $job->sendComplete('1');
     }
 
-    private function convertFileToFormat($file, $targetFormatExtension, $orderId, ZipArchive $zipArchive)
+    private function convertFileToFormat($file, $targetFormatExtension, ZipArchive $zipArchive, Order $order)
     {
         $targetFile = tempnam($this->tmpDir, 'ConvertGifToVideoWorker') . '.' . $targetFormatExtension;
         `ffmpeg -i $file $targetFile 2>&1 > /dev/null`;
-        $fileSystemPath = $orderId . '/video.' . $targetFormatExtension;
+        $fileSystemPath = $order->getId() . '/video.' . $targetFormatExtension;
         $this->fileSystem->write($fileSystemPath, $targetFile);
 
         $this->logger->log(LogLevel::INFO, 'Created video file', [
@@ -83,12 +65,16 @@ class ConvertGifToVideoWorker
         ]);
 
         $zipArchive->addFile($targetFile, 'video.' . $targetFormatExtension);
+
+        $order->addResultAttribute($targetFormatExtension, $this->fileSystem->getURL($fileSystemPath));
     }
 
-    private function saveZipToFileSystem(ZipArchive $zipArchive, $zipFile, $orderId)
+    private function saveZipToFileSystem(ZipArchive $zipArchive, $zipFile, Order $order)
     {
         $zipArchive->close();
-        $fileSystemPath = $orderId . '/videos.zip';
+        $fileSystemPath = $order->getId() . '/videos.zip';
         $this->fileSystem->write($fileSystemPath, $zipFile);
+
+        $order->addResultAttribute('allVideosInAZip', $this->fileSystem->getURL($fileSystemPath));
     }
 }

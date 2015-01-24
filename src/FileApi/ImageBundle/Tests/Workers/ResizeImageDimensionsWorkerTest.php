@@ -25,12 +25,13 @@ class ResizeImageDimensionsWorkerTest extends BaseUnitTest
     {
         $inputFile = $this->fileSystem->writeContent('ResizeImageDimensionsWorkerTest/test.jpg', file_get_contents(__DIR__ . '/test.jpg'));
 
+        $order = $this->getOrder($inputFile);
+
         $fakeGearmanJob = $this->getMockBuilder('\GearmanJob')->disableOriginalConstructor()->getMock();
         $fakeGearmanJob->expects($this->any())->method('workload')
-            ->will($this->returnCallback(function () use ($inputFile) {
+            ->will($this->returnCallback(function () use ($inputFile, $order) {
                 return json_encode([
-                    'fileSystemPath' => $inputFile,
-                    'orderId' => 123,
+                    'orderId' => $order->getId(),
                     'targetWidth' => 150,
                     'targetHeight' => 160,
                 ]);
@@ -40,11 +41,11 @@ class ResizeImageDimensionsWorkerTest extends BaseUnitTest
         $worker = $this->container->get('file_api_image.resize_image_dimensions_worker');
         $worker->resizeImageDimensions($fakeGearmanJob);
 
-        $filesInFileSystem = $this->fileSystem->getFiles('123/');
+        $filesInFileSystem = $this->fileSystem->getFiles($order->getId() . '/');
         $this->assertCount(1, $filesInFileSystem);
-        $this->assertContains('123/resized', $filesInFileSystem);
+        $this->assertContains($order->getId() . '/resized', $filesInFileSystem);
 
-        $actualDimensions = getimagesize($this->fileSystem->getURL('123/resized'));
+        $actualDimensions = getimagesize($this->fileSystem->getURL($order->getId() . '/resized'));
         $this->assertEquals(150, $actualDimensions[0]);
         $this->assertEquals(160, $actualDimensions[1]);
     }

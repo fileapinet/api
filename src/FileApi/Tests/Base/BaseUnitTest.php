@@ -2,6 +2,7 @@
 
 namespace FileApi\Tests\Base;
 
+use FileApi\ApiBundle\Document\Order;
 use Partnermarketing\FileSystemBundle\ServerFileSystem\ServerFileSystem;
 
 abstract class BaseUnitTest extends \PHPUnit_Framework_TestCase
@@ -14,6 +15,7 @@ abstract class BaseUnitTest extends \PHPUnit_Framework_TestCase
         $this->kernel = new \AppKernel('test', true);
         $this->kernel->boot();
         $this->container = $this->kernel->getContainer();
+        $this->dm = $this->container->get('doctrine_mongodb')->getManager();
     }
 
     public function tearDown()
@@ -30,5 +32,21 @@ abstract class BaseUnitTest extends \PHPUnit_Framework_TestCase
                 ServerFileSystem::deleteFilesInDirectoryRecursively($localFileSystemPath);
             }
         }
+    }
+
+    protected function getOrder($fileSystemPath)
+    {
+        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
+
+        $order = new Order(
+            $request,
+            $fileSystemPath,
+            $this->container->getParameter('partnermarketing_file_system.config')['local_storage']['url'] . '/' . $fileSystemPath
+        );
+
+        $this->dm->persist($order);
+        $this->dm->flush();
+
+        return $order;
     }
 }

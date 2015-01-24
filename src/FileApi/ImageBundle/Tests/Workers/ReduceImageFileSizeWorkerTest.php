@@ -39,13 +39,15 @@ class ReduceImageFileSizeWorkerTest extends BaseUnitTest
 
     public function testReduceImageFileSizeFromUnsupportedFileExtension()
     {
+        $inputFile = $this->fileSystem->writeContent('ReduceImageFileSizeWorkerTest/test.doc', file_get_contents(__DIR__ . '/test.doc'));
+
+        $order = $this->getOrder($inputFile);
+
         $fakeGearmanJob = $this->getMockBuilder('\GearmanJob')->disableOriginalConstructor()->getMock();
         $fakeGearmanJob->expects($this->any())->method('workload')
-            ->will($this->returnCallback(function () {
+            ->will($this->returnCallback(function () use ($order) {
                 return json_encode([
-                    'fileSystemPath' => 'file.gif',
-                    'orderId' => 123,
-                    'targetMaxSizeInBytes' => 35000,
+                    'orderId' => $order->getId(),
                 ]);
             }));
         $fakeGearmanJob->expects($this->once())->method('sendFail');
@@ -58,12 +60,13 @@ class ReduceImageFileSizeWorkerTest extends BaseUnitTest
     {
         $inputFile = $this->fileSystem->writeContent('ReduceImageFileSizeWorkerTest/test.' . $fileType, file_get_contents(__DIR__ . '/test.' . $fileType));
 
+        $order = $this->getOrder($inputFile);
+
         $fakeGearmanJob = $this->getMockBuilder('\GearmanJob')->disableOriginalConstructor()->getMock();
         $fakeGearmanJob->expects($this->any())->method('workload')
-            ->will($this->returnCallback(function () use ($inputFile) {
+            ->will($this->returnCallback(function () use ($inputFile, $order) {
                 return json_encode([
-                    'fileSystemPath' => $inputFile,
-                    'orderId' => 123,
+                    'orderId' => $order->getId(),
                     'targetMaxSizeInBytes' => 35000,
                 ]);
             }));
@@ -72,9 +75,9 @@ class ReduceImageFileSizeWorkerTest extends BaseUnitTest
         $worker = $this->container->get('file_api_image.reduce_image_file_size_worker');
         $worker->reduceImageFileSize($fakeGearmanJob);
 
-        $filesInFileSystem = $this->fileSystem->getFiles('123/');
+        $filesInFileSystem = $this->fileSystem->getFiles($order->getId() . '/');
         $this->assertCount(1, $filesInFileSystem);
-        $this->assertContains('123/reduced.' . $fileType, $filesInFileSystem);
-        $this->assertLessThan(35000, strlen($this->fileSystem->read('123/reduced.' . $fileType)));
+        $this->assertContains($order->getId() . '/reduced.' . $fileType, $filesInFileSystem);
+        $this->assertLessThan(35000, strlen($this->fileSystem->read($order->getId() . '/reduced.' . $fileType)));
     }
 }

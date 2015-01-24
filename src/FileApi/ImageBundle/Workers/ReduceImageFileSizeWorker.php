@@ -4,10 +4,8 @@ namespace FileApi\ImageBundle\Workers;
 
 use Mmoreram\GearmanBundle\Driver\Gearman;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
-use Partnermarketing\FileSystemBundle\Factory\FileSystemFactory;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use FileApi\FileBundle\Workers\AbstractWorker;
 
 /**
  * @Gearman\Work(
@@ -15,25 +13,8 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
  *     defaultMethod = "doBackground"
  * )
  */
-class ReduceImageFileSizeWorker
+class ReduceImageFileSizeWorker extends AbstractWorker
 {
-    protected $dm;
-
-    protected $logger;
-
-    private $fileSystem;
-
-    private $tmpDir;
-
-    public function __construct(ManagerRegistry $mongodb, LoggerInterface $logger,
-        FileSystemFactory $fileSystemFactory, $tmpDir)
-    {
-        $this->dm = $mongodb->getManager();
-        $this->logger = $logger;
-        $this->fileSystem = new FileSystem($fileSystemFactory->build());
-        $this->tmpDir = $tmpDir;
-    }
-
     /**
      * @param  \GearmanJob $job
      * @return boolean
@@ -41,31 +22,31 @@ class ReduceImageFileSizeWorker
      */
     public function reduceImageFileSize(\GearmanJob $job)
     {
-        $workload = json_decode($job->workload(), true);
+        list($workload, $order) = $this->init($job);
 
-        $this->logger->log(LogLevel::INFO, 'Request received', $workload);
+        $fileExtension = strtolower(strrev(explode('.', strrev($order->getFileSystemPath()), 2)[0]));
 
-        $fileExtension = strtolower(strrev(explode('.', strrev($workload['fileSystemPath']), 2)[0]));
         if ($fileExtension === 'jpg' || $fileExtension === 'jpeg') {
-            $this->reduce('jpg', $workload);
+            $this->reduce('jpg', $order, $workload['targetMaxSizeInBytes']);
+
             return $job->sendComplete('1');
         } elseif ($fileExtension === 'png') {
-            $this->reduce('png', $workload);
+            $this->reduce('png', $order, $workload['targetMaxSizeInBytes']);
+
             return $job->sendComplete('1');
         } else {
             $this->logger->log(LogLevel::INFO, 'File extension not supported', [
                 'extension' => $fileExtension,
-                'fileSystemPath' => $workload['fileSystemPath'],
+                'fileSystemPath' => $order->getFileSystemPath(),
             ]);
+
             return $job->sendFail();
         }
     }
 
-    private function reduce($fileExtension, $workload)
+    private function reduce($fileExtension, $order, $targetMaxSizeInBytes)
     {
-        $orderId = $workload['orderId'];
-        $targetMaxSizeInBytes = $workload['targetMaxSizeInBytes'];
-        $originalFile = $this->fileSystem->copyToLocalTemporaryFile($workload['fileSystemPath']);
+        $originalFile = $this->fileSystem->copyToLocalTemporaryFile($order->getFileSystemPath());
 
         if ($fileExtension === 'jpg' || $fileExtension === 'jpeg') {
             $command = 'convert %originalFile% -quality %quality% %tmpFile%';
@@ -73,7 +54,7 @@ class ReduceImageFileSizeWorker
             $command = 'cat %originalFile% | pngquant --quality %quality% - > %tmpFile%';
         }
 
-        $targetFileSystemPath = $orderId . '/reduced.' . $fileExtension;
+        $targetFileSystemPath = $order->getId() . '/reduced.' . $fileExtension;
         $originalSize = filesize($originalFile);
         $tmpDir = $this->tmpDir . '/ReduceImageFileSizeWorker/';
         if (!is_dir($tmpDir)) {
@@ -104,7 +85,7 @@ class ReduceImageFileSizeWorker
             'originalSize' => $originalSize,
             'resultSize' => $resultSize,
             'resultFileSystemPath' => $targetFileSystemPath,
-            'orderId' => $orderId,
+            'orderId' => $order->getId(),
         ]);
     }
 }
