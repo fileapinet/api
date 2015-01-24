@@ -74,8 +74,8 @@ partnermarketing_file_system:
             bucket: xxxxxxxx
             region: xxxxxxxx
         local_storage:
-            path: /home/fileapi/project/web/file-system
-            url: 'http://fileapi.dev/file-system'
+            path: /home/fileapi/project/api/current/web/file-system
+            url: 'http://files.fileapi.dev'
     tmp_dir: /tmp
 
 gearman:
