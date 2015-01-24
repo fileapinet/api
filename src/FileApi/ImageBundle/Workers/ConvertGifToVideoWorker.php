@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
  * @Gearman\Work(
- *     service="ConvertGifToVideoWorker",
+ *     service="file_api_image.convert_gif_to_video_worker",
  *     defaultMethod = "doBackground"
  * )
  */

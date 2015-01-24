@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
  * @Gearman\Work(
- *     service="ReduceImageFileSizeWorker",
+ *     service="file_api_image.reduce_image_file_size_worker",
  *     defaultMethod = "doBackground"
  * )
  */

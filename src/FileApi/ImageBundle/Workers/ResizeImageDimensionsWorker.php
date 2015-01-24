@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
  * @Gearman\Work(
- *     service="ResizeImageDimensionsWorker",
+ *     service="file_api_image.resize_image_dimensions_worker",
  *     defaultMethod = "doBackground"
  * )
  */

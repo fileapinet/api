@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
  * @Gearman\Work(
- *     service="ConvertImageWorker",
+ *     service="file_api_image.convert_image_worker",
  *     defaultMethod = "doBackground"
  * )
  */
