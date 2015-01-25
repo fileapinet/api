@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Usage: create-web-fonts path/to/font.ttf
+# Several web font files will be created inside the same directory:
+# fontname.eot, fontname.svg, fontname.otf, fontname.woff
+
+ttfFont=$1
+ttfFileWithoutExtension=$( echo $ttfFont | sed 's/\.ttf$//' )
+eotFont="$ttfFileWithoutExtension.eot"
+otfFont="$ttfFileWithoutExtension.otf"
+svgFont="$ttfFileWithoutExtension.svg"
+woffFont="$ttfFileWithoutExtension.woff"
+
+fontforge -c '
+import fontforge
+font = fontforge.open("'$ttfFont'")
+font.generate("'$eotFont'")
+font.generate("'$svgFont'")
+font.generate("'$otfFont'")
+font.generate("'$woffFont'")
+'
+
+exit 0

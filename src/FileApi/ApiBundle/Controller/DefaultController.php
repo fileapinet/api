@@ -73,6 +73,17 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/convert-ttf-font-to-web-fonts")
+     */
+    public function convertTtfFontToWebFontsAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+        $order = $this->runWorker('FileApiWorkerBundleWorkersConvertTtfFontWorker~createWebFonts', $order);
+
+        return new JsonResponse($order->getResult());
+    }
+
+    /**
      * @return \FileApi\ApiBundle\Document\Order
      */
     private function getOrderFromRequest(Request $request)
