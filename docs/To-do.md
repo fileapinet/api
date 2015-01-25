@@ -1,7 +1,7 @@
 To-do list
 ==========
 
-* Host file.
+* Host file in different regions.
 * Screenshot web page. API + a URL that you can use in an <img> tag to embed a screenshot.
 * Screenshot PDF.
 * Convert font file to other font formats.
@@ -11,3 +11,4 @@ To-do list
 * Virus scan.
 * Convert video file to other video formats.
 * Convert FinalDraft/Celtx files to other formats.
+* Add watermark to image.
