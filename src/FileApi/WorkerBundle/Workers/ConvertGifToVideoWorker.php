@@ -1,13 +1,13 @@
 <?php
 
-namespace FileApi\ImageBundle\Workers;
+namespace FileApi\WorkerBundle\Workers;
 
 use ZipArchive;
 use FileApi\ApiBundle\Document\Order;
 use Mmoreram\GearmanBundle\Driver\Gearman;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 use Psr\Log\LogLevel;
-use FileApi\FileBundle\Workers\AbstractWorker;
+use FileApi\WorkerBundle\Workers\AbstractWorker;
 
 /**
  * @Gearman\Work(

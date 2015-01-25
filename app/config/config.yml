@@ -80,8 +80,8 @@ partnermarketing_file_system:
 
 gearman:
     bundles:
-        ImageBundle:
-            name: FileApiImageBundle
+        WorkerBundle:
+            name: FileApiWorkerBundle
             active: true
             include:
                 - Workers

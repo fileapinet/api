@@ -1,6 +1,6 @@
 services:
     file_api_image.convert_image_worker:
-        class: FileApi\ImageBundle\Workers\ConvertImageWorker
+        class: FileApi\WorkerBundle\Workers\ConvertImageWorker
         arguments:
             - @doctrine_mongodb
             - @monolog.logger
@@ -8,7 +8,7 @@ services:
             - %partnermarketing_file_system.tmp_dir%
 
     file_api_image.convert_gif_to_video_worker:
-        class: FileApi\ImageBundle\Workers\ConvertGifToVideoWorker
+        class: FileApi\WorkerBundle\Workers\ConvertGifToVideoWorker
         arguments:
             - @doctrine_mongodb
             - @monolog.logger
@@ -16,7 +16,7 @@ services:
             - %partnermarketing_file_system.tmp_dir%
 
     file_api_image.reduce_image_file_size_worker:
-        class: FileApi\ImageBundle\Workers\ReduceImageFileSizeWorker
+        class: FileApi\WorkerBundle\Workers\ReduceImageFileSizeWorker
         arguments:
             - @doctrine_mongodb
             - @monolog.logger
@@ -24,7 +24,7 @@ services:
             - %partnermarketing_file_system.tmp_dir%
 
     file_api_image.resize_image_dimensions_worker:
-        class: FileApi\ImageBundle\Workers\ResizeImageDimensionsWorker
+        class: FileApi\WorkerBundle\Workers\ResizeImageDimensionsWorker
         arguments:
             - @doctrine_mongodb
             - @monolog.logger

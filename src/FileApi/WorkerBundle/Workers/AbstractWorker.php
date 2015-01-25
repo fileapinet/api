@@ -1,6 +1,6 @@
 <?php
 
-namespace FileApi\FileBundle\Workers;
+namespace FileApi\WorkerBundle\Workers;
 
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 use Partnermarketing\FileSystemBundle\Factory\FileSystemFactory;

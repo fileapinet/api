@@ -1,8 +1,8 @@
 <?php
 
-namespace FileApi\ImageBundle\Tests\Workers;
+namespace FileApi\WorkerBundle\Tests\Workers;
 
-use FileApi\ImageBundle\Workers\ReduceImageFileSizeWorker;
+use FileApi\WorkerBundle\Workers\ReduceImageFileSizeWorker;
 use FileApi\Tests\Base\BaseUnitTest;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 

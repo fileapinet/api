@@ -18,8 +18,7 @@ class AppKernel extends Kernel
             new Liip\DoctrineCacheBundle\LiipDoctrineCacheBundle(),
             new Mmoreram\GearmanBundle\GearmanBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new FileApi\ImageBundle\FileApiImageBundle(),
-            new FileApi\FileBundle\FileApiFileBundle(),
+            new FileApi\WorkerBundle\FileApiWorkerBundle(),
             new FileApi\ApiBundle\FileApiApiBundle(),
         );
 

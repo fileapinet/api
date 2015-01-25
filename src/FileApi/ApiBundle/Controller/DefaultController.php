@@ -18,7 +18,7 @@ class DefaultController extends Controller
     public function convertGifToVideosAction(Request $request)
     {
         $order = $this->getOrderFromRequest($request);
-        $order = $this->runWorker('FileApiImageBundleWorkersConvertGifToVideoWorker~createVideos', $order);
+        $order = $this->runWorker('FileApiWorkerBundleWorkersConvertGifToVideoWorker~createVideos', $order);
 
         return new JsonResponse($order->getResult());
     }
@@ -29,7 +29,7 @@ class DefaultController extends Controller
     public function convertImageToOtherFormatsAction(Request $request)
     {
         $order = $this->getOrderFromRequest($request);
-        $order = $this->runWorker('FileApiImageBundleWorkersConvertImageWorker~createImages', $order);
+        $order = $this->runWorker('FileApiWorkerBundleWorkersConvertImageWorker~createImages', $order);
 
         return new JsonResponse($order->getResult());
     }
@@ -40,7 +40,7 @@ class DefaultController extends Controller
     public function reduceImageFileSizeAction(Request $request)
     {
         $order = $this->getOrderFromRequest($request);
-        $order = $this->runWorker('FileApiImageBundleWorkersReduceImageFileSizeWorker~reduceImageFileSize', $order, [
+        $order = $this->runWorker('FileApiWorkerBundleWorkersReduceImageFileSizeWorker~reduceImageFileSize', $order, [
             'targetMaxSizeInBytes' => $request->query->get('targetMaxSizeInBytes'),
         ]);
 
@@ -53,7 +53,7 @@ class DefaultController extends Controller
     public function resizeImageAction(Request $request)
     {
         $order = $this->getOrderFromRequest($request);
-        $order = $this->runWorker('FileApiImageBundleWorkersResizeImageDimensionsWorker~resizeImageDimensions', $order, [
+        $order = $this->runWorker('FileApiWorkerBundleWorkersResizeImageDimensionsWorker~resizeImageDimensions', $order, [
             'targetWidth' => $request->query->get('targetWidth'),
             'targetHeight' => $request->query->get('targetHeight'),
         ]);
