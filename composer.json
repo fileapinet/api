@@ -15,7 +15,6 @@
         "doctrine/mongodb-odm": "1.0.0-BETA9",
         "doctrine/mongodb-odm-bundle": "3.0.0-BETA5",
         "twig/extensions": "~1.0",
-        "symfony/swiftmailer-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
         "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",

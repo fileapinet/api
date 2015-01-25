@@ -45,14 +45,6 @@ liip_doctrine_cache:
         gearman:
             type: file_system
 
-# Swiftmailer Configuration
-swiftmailer:
-    transport: "%mailer_transport%"
-    host:      "%mailer_host%"
-    username:  "%mailer_user%"
-    password:  "%mailer_password%"
-    spool:     { type: memory }
-
 services:
     mongo.connection:
         class: MongoDoctrine\MongoDB\Connection
