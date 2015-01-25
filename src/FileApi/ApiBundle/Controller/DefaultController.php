@@ -62,6 +62,17 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/convert-video-to-other-formats")
+     */
+    public function convertVideoToOtherFormatsAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+        $order = $this->runWorker('FileApiWorkerBundleWorkersConvertVideoWorker~createVideos', $order);
+
+        return new JsonResponse($order->getResult());
+    }
+
+    /**
      * @return \FileApi\ApiBundle\Document\Order
      */
     private function getOrderFromRequest(Request $request)

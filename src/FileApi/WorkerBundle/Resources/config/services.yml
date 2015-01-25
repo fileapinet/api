@@ -30,3 +30,11 @@ services:
             - @monolog.logger
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
+
+    file_api_worker.convert_video_worker:
+        class: FileApi\WorkerBundle\Workers\ConvertVideoWorker
+        arguments:
+            - @doctrine_mongodb
+            - @monolog.logger
+            - @partnermarketing_file_system.factory
+            - %partnermarketing_file_system.tmp_dir%

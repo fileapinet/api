@@ -9,6 +9,5 @@ To-do list
 * Crack Bitcoin wallet password.
 * Detect programming language in a file. 
 * Virus scan.
-* Convert video file to other video formats.
 * Convert FinalDraft/Celtx files to other formats.
 * Add watermark to image.
