@@ -6,7 +6,5 @@ To-do list
 * Screenshot PDF.
 * Crack PDF password.
 * Crack Bitcoin wallet password.
-* Detect programming language in a file. 
-* Virus scan.
 * Convert FinalDraft/Celtx files to other formats.
 * Add watermark to image.

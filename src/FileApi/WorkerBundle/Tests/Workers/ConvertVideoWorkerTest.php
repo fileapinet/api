@@ -36,7 +36,7 @@ class ConvertVideoWorkerTest extends BaseUnitTest
             }));
         $fakeGearmanJob->expects($this->once())->method('sendComplete');
 
-        $worker = $this->container->get('file_api_image.convert_video_worker');
+        $worker = $this->container->get('file_api_worker.convert_video_worker');
         $worker->createVideos($fakeGearmanJob);
 
         $filesInFileSystem = $this->fileSystem->getFiles($order->getId() . '/');

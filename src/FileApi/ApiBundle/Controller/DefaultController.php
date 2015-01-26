@@ -84,6 +84,17 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/virus-scan")
+     */
+    public function virusScanAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+        $order = $this->runWorker('FileApiWorkerBundleWorkersVirusScanWorker~scan', $order);
+
+        return new JsonResponse($order->getResult());
+    }
+
+    /**
      * @return \FileApi\ApiBundle\Document\Order
      */
     private function getOrderFromRequest(Request $request)

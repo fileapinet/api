@@ -46,3 +46,11 @@ services:
             - @monolog.logger
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
+
+    file_api_worker.virus_scan_worker:
+        class: FileApi\WorkerBundle\Workers\VirusScanWorker
+        arguments:
+            - @doctrine_mongodb
+            - @monolog.logger
+            - @partnermarketing_file_system.factory
+            - %partnermarketing_file_system.tmp_dir%
