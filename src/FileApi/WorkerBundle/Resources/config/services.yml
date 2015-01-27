@@ -54,3 +54,11 @@ services:
             - @monolog.logger
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
+
+    file_api_worker.screenshot_web_page_worker:
+        class: FileApi\WorkerBundle\Workers\ScreenshotWebPageWorker
+        arguments:
+            - @doctrine_mongodb
+            - @monolog.logger
+            - @partnermarketing_file_system.factory
+            - %partnermarketing_file_system.tmp_dir%

@@ -39,6 +39,11 @@ class Order implements JsonSerializable
     /**
      * @MongoDB\Hash
      */
+    private $input;
+
+    /**
+     * @MongoDB\Hash
+     */
     private $result;
 
     public function __construct(Request $request, $fileSystemPath, $fileSystemUrl)
@@ -47,6 +52,7 @@ class Order implements JsonSerializable
         $this->fileSystemPath = $fileSystemPath;
         $this->fileSystemUrl = $fileSystemUrl;
         $this->date = new \DateTime();
+        $this->input = [];
         $this->result = [];
     }
 
@@ -68,6 +74,16 @@ class Order implements JsonSerializable
     public function getFileSystemUrl()
     {
         return $this->fileSystemUrl;
+    }
+
+    public function getInput()
+    {
+        return $this->input;
+    }
+
+    public function addInputAttribute($key, $value)
+    {
+        $this->input[$key] = $value;
     }
 
     public function getResult()
@@ -93,6 +109,7 @@ class Order implements JsonSerializable
             'requestUrl' => $this->requestUrl,
             'fileSystemPath' => $this->fileSystemPath,
             'fileSystemUrl' => $this->fileSystemUrl,
+            'input' => $this->input,
             'result' => $this->result,
         ];
     }

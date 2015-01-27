@@ -95,6 +95,24 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/screenshot")
+     */
+    public function screenshotWebPageAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+
+        $order->addInputAttribute('url', $request->query->get('url'));
+
+        $dm = $this->container->get('doctrine_mongodb')->getManager();
+        $dm->persist($order);
+        $dm->flush();
+
+        $order = $this->runWorker('FileApiWorkerBundleWorkersScreenshotWebPageWorker~screenshot', $order);
+
+        return new JsonResponse($order->getResult());
+    }
+
+    /**
      * @return \FileApi\ApiBundle\Document\Order
      */
     private function getOrderFromRequest(Request $request)
