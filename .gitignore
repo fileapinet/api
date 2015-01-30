@@ -13,3 +13,5 @@
 !bin/symfony_requirements
 /composer.phar
 /web/file-system
+/supervisord.log
+/supervisord.pid

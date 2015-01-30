@@ -19,7 +19,6 @@ Marketing site:
 
 General:
 
-* Supervisord config
 * Restrict the "demo" API key to fileapi.net fixture files.
 * Accept file uploads, not just source query string.
 * PHP client library.
