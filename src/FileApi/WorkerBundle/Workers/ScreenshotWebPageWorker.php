@@ -4,7 +4,6 @@ namespace FileApi\WorkerBundle\Workers;
 
 use Mmoreram\GearmanBundle\Driver\Gearman;
 use Psr\Log\LogLevel;
-use FileApi\WorkerBundle\Workers\AbstractWorker;
 
 /**
  * @Gearman\Work(
@@ -24,26 +23,26 @@ class ScreenshotWebPageWorker extends AbstractWorker
     {
         list($workload, $order) = $this->init($job);
 
-        $tmpFile = tempnam($this->tmpDir, 'ScreenshotWebPageWorker');
-        $command = sprintf('pageres [ %s %s ] --crop --filename %s',
+        $tmpFile = tempnam($this->tmpDir, 'ScreenshotWebPageWorker') . '.png';
+        $command = sprintf('node ' . __DIR__ . '/../Resources/node/screenshot.js %s %s',
             escapeshellarg($order->getInput()['url']),
-            escapeshellarg('1024x800'),
             escapeshellarg($tmpFile));
         $output = shell_exec($command);
 
-        $this->logger->log(LogLevel::INFO, 'Command', [
-            'command' => $command,
-            'output' => $output
-        ]);
+        if (!file_exists($tmpFile)) {
+            throw new \Exception('File not created by webshot: ' . $tmpFile);
+        }
+        if (filesize($tmpFile) === 0) {
+            throw new \Exception('File created by webshot has size 0: ' . $tmpFile);
+        }
 
         $fileSystemPath = $order->getId() . '/screenshot.png';
-        $this->fileSystem->writeContent($fileSystemPath, file_get_contents($tmpFile . '.png'));
+        $this->fileSystem->writeContent($fileSystemPath, file_get_contents($tmpFile));
 
-        unlink($tmpFile . '.png');
+        unlink($tmpFile);
 
         $fileSystemUrl = $this->fileSystem->getURL($fileSystemPath);
         $order->addResultAttribute('screenshot', $fileSystemUrl);
-
 
         $this->dm->persist($order);
         $this->dm->flush();

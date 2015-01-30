@@ -1,0 +1,16 @@
+{
+  "name": "fileapi.net",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fileapinet/api.git"
+  },
+  "author": "Amy Boyd <amy@amyboyd.co.uk>",
+  "bugs": {
+    "url": "https://github.com/fileapinet/api/issues"
+  },
+  "homepage": "https://github.com/fileapinet/api",
+  "devDependencies": {
+    "webshot": "~0.15.3"
+  }
+}

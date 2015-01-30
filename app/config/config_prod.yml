@@ -4,7 +4,7 @@ imports:
 monolog:
     handlers:
         main:
-            type:         fingers_crossed
+            type:         stream
             action_level: info
             handler:      nested
         nested:
