@@ -57,13 +57,14 @@ class ReduceImageFileSizeWorker extends AbstractWorker
         $targetFileSystemPath = $order->getId() . '/reduced.' . $fileExtension;
         $originalSize = filesize($originalFile);
         $tmpDir = $this->tmpDir . '/ReduceImageFileSizeWorker/';
+
         if (!is_dir($tmpDir)) {
             mkdir($tmpDir);
         }
         $quality = 100;
 
         do {
-            $tmpFile = tempnam($tmpDir, $quality . '-');
+            $tmpFile = tempnam($tmpDir, $quality . '-') . '.' . $fileExtension;
             $parameterisedCommand = strtr($command, [
                 '%originalFile%' => escapeshellarg($originalFile),
                 '%tmpFile%' => escapeshellarg($tmpFile),
@@ -75,12 +76,23 @@ class ReduceImageFileSizeWorker extends AbstractWorker
             }
             $resultSize = filesize($tmpFile);
 
-            if ($resultSize >= $targetMaxSizeInBytes) {
+            if ($resultSize > $targetMaxSizeInBytes) {
                 unlink($tmpFile);
             }
-        } while ($resultSize >= $targetMaxSizeInBytes && $quality >= 0 && $quality--);
+        } while ($resultSize > $targetMaxSizeInBytes && $quality > 1 && $quality--);
 
-        $this->fileSystem->write($targetFileSystemPath, $tmpFile);
+        if ($resultSize > $targetMaxSizeInBytes) {
+            $this->logger->log(LogLevel::INFO, 'Failed to reduce image file size', [
+                'originalSize' => $originalSize,
+                'orderId' => $order->getId(),
+            ]);
+            $order->addResultAttribute('error', 'Unable to get this file below the target max size. Only managed to get to: ' . $resultSize);
+            $this->dm->persist($order);
+            $this->dm->flush();
+            return;
+        }
+
+        $this->fileSystem->writeContent($targetFileSystemPath, file_get_contents($tmpFile));
         unlink($tmpFile);
         unlink($originalFile);
 

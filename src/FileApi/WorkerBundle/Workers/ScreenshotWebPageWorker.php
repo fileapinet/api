@@ -25,20 +25,25 @@ class ScreenshotWebPageWorker extends AbstractWorker
         list($workload, $order) = $this->init($job);
 
         $tmpFile = tempnam($this->tmpDir, 'ScreenshotWebPageWorker');
-        $command = sprintf('pageres %s %dx%d --crop --filename %s',
+        $command = sprintf('pageres [ %s %s ] --crop --filename %s',
             escapeshellarg($order->getInput()['url']),
-            '1024',
-            '800',
+            escapeshellarg('1024x800'),
             escapeshellarg($tmpFile));
         $output = shell_exec($command);
+
+        $this->logger->log(LogLevel::INFO, 'Command', [
+            'command' => $command,
+            'output' => $output
+        ]);
 
         $fileSystemPath = $order->getId() . '/screenshot.png';
         $this->fileSystem->writeContent($fileSystemPath, file_get_contents($tmpFile . '.png'));
 
+        unlink($tmpFile . '.png');
+
         $fileSystemUrl = $this->fileSystem->getURL($fileSystemPath);
         $order->addResultAttribute('screenshot', $fileSystemUrl);
 
-        unlink($tmpFile . '.png');
 
         $this->dm->persist($order);
         $this->dm->flush();

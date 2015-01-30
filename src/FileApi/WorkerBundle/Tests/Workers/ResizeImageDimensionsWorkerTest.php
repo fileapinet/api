@@ -43,9 +43,9 @@ class ResizeImageDimensionsWorkerTest extends BaseUnitTest
 
         $filesInFileSystem = $this->fileSystem->getFiles($order->getId() . '/');
         $this->assertCount(1, $filesInFileSystem);
-        $this->assertContains($order->getId() . '/resized', $filesInFileSystem);
+        $this->assertContains($order->getId() . '/resized.jpg', $filesInFileSystem);
 
-        $actualDimensions = getimagesize($this->fileSystem->getURL($order->getId() . '/resized'));
+        $actualDimensions = getimagesize($this->fileSystem->getURL($order->getId() . '/resized.jpg'));
         $this->assertEquals(150, $actualDimensions[0]);
         $this->assertEquals(160, $actualDimensions[1]);
     }

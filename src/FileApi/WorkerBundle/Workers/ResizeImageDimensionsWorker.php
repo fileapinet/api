@@ -38,7 +38,7 @@ class ResizeImageDimensionsWorker extends AbstractWorker
         ]);
         shell_exec($parameterisedCommand);
 
-        $targetFileSystemPath = $order->getId() . '/resized';
+        $targetFileSystemPath = $order->getId() . '/resized.' . pathinfo($order->getFileSystemPath(), PATHINFO_EXTENSION);
         $this->fileSystem->write($targetFileSystemPath, $tmpFile);
 
         unlink($tmpFile);
