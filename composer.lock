@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "accbbc17b6dc8ef19bc634bd498c3bdd",
+    "hash": "15bb77293f9afc98e8006e31b6c5a8f9",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1414,16 +1414,16 @@
         },
         {
             "name": "partnermarketing/file-system-bundle",
-            "version": "0.2.1",
+            "version": "0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/partnermarketing/PartnermarketingFileSystemBundle.git",
-                "reference": "f00dd9f4bd9d25e70da87934088ddc4e986fd006"
+                "reference": "d4d6a557ccf9682a12ce4eea42b71261a1713077"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/partnermarketing/PartnermarketingFileSystemBundle/zipball/f00dd9f4bd9d25e70da87934088ddc4e986fd006",
-                "reference": "f00dd9f4bd9d25e70da87934088ddc4e986fd006",
+                "url": "https://api.github.com/repos/partnermarketing/PartnermarketingFileSystemBundle/zipball/d4d6a557ccf9682a12ce4eea42b71261a1713077",
+                "reference": "d4d6a557ccf9682a12ce4eea42b71261a1713077",
                 "shasum": ""
             },
             "require": {
@@ -1442,8 +1442,12 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
             "description": "A file system component supporting different file storage adapters.",
-            "time": "2014-12-02 00:16:10"
+            "homepage": "https://github.com/partnermarketing/PartnermarketingFileSystemBundle",
+            "time": "2015-01-30 20:54:35"
         },
         {
             "name": "psr/log",
