@@ -3,6 +3,9 @@ parameters:
     mongodb_server: 'mongodb://localhost:27017'
     mongodb_db: fileapi_dev
 
+    base_host: fileapi.dev
+    protocol: http://
+
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
     mailer_user:       ~
