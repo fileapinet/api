@@ -6,6 +6,7 @@ use FileApi\ApiBundle\Document\Order;
 use FileApi\WorkerBundle\Workers\ScreenshotWebPageWorker;
 use FileApi\Tests\Base\BaseUnitTest;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
+use Symfony\Component\HttpFoundation\Request;
 
 require_once dirname(__DIR__).'/../../../../app/AppKernel.php';
 
@@ -24,13 +25,13 @@ class ScreenshotWebPageWorkerTest extends BaseUnitTest
 
     public function testScreenshot()
     {
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
+        $request = new Request();
         $order = new Order(
             $request,
             null,
             null
         );
-        $order->addInputAttribute('url', 'http://bing.com/');
+        $order->addInputAttribute('requestQueryParams', ['url' => 'http://bing.com/']);
         $this->dm->persist($order);
         $this->dm->flush();
 

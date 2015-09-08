@@ -52,8 +52,12 @@ class Order implements JsonSerializable
         $this->fileSystemPath = $fileSystemPath;
         $this->fileSystemUrl = $fileSystemUrl;
         $this->date = new \DateTime();
-        $this->input = [];
         $this->result = [];
+
+        $this->input = [];
+        $this->input['requestUrl'] = $request->getUri();
+        $this->input['requestQueryParams'] = $request->query->all();
+        $this->input['requestBodyParams'] = $request->request->all();
     }
 
     public function getId()

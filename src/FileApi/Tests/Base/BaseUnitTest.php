@@ -22,21 +22,34 @@ abstract class BaseUnitTest extends \PHPUnit_Framework_TestCase
     {
         $this->kernel->shutdown();
 
-        // Clean the local file system's folder.
+        $this->cleanLocalFileSystem();
+    }
+
+    /**
+     * Clean the local file system's folder.
+     */
+    private function cleanLocalFileSystem()
+    {
+        if (!$this->container) {
+            return;
+        }
+
         $fileSystemConfig = $this->container->getParameter('partnermarketing_file_system.config');
         $localFileSystemPath = $fileSystemConfig['local_storage']['path'];
-        if ($localFileSystemPath && is_dir($localFileSystemPath)) {
-            // Do an ultra-paranoid safety check to ensure the entire local server file system
-            // doesn't get deleted.
-            if (strpos($localFileSystemPath, realpath($this->kernel->getRootDir() . '/../')) !== false) {
-                ServerFileSystem::deleteFilesInDirectoryRecursively($localFileSystemPath);
-            }
+        if (!$localFileSystemPath || !is_dir($localFileSystemPath)) {
+            return;
+        }
+
+        // Do an ultra-paranoid safety check to ensure the entire local server's file system
+        // (instead of the application file system) doesn't get deleted.
+        if (strpos($localFileSystemPath, realpath($this->kernel->getRootDir() . '/../')) !== false) {
+            ServerFileSystem::deleteFilesInDirectoryRecursively($localFileSystemPath);
         }
     }
 
     protected function getOrder($fileSystemPath)
     {
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
+        $request = new \Symfony\Component\HttpFoundation\Request();
 
         $order = new Order(
             $request,

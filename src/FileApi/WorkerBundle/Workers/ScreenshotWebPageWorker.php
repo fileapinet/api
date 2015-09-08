@@ -25,7 +25,7 @@ class ScreenshotWebPageWorker extends AbstractWorker
 
         $tmpFile = tempnam($this->tmpDir, 'ScreenshotWebPageWorker') . '.png';
         $command = sprintf('node ' . __DIR__ . '/../Resources/node/screenshot.js %s %s',
-            escapeshellarg($order->getInput()['url']),
+            escapeshellarg($order->getInput()['requestQueryParams']['url']),
             escapeshellarg($tmpFile));
         $output = shell_exec($command);
 

@@ -99,9 +99,7 @@ class DefaultController extends Controller
      */
     public function screenshotWebPageAction(Request $request)
     {
-        $order = $this->getOrderFromRequest($request);
-
-        $order->addInputAttribute('url', $request->query->get('url'));
+        $order = new Order($request, null, null);
 
         $dm = $this->container->get('doctrine_mongodb')->getManager();
         $dm->persist($order);
