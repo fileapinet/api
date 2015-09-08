@@ -66,7 +66,7 @@ partnermarketing_file_system:
             bucket: xxxxxxxx
             region: xxxxxxxx
         local_storage:
-            path: /home/fileapi/project/api/current/web/file-system
+            path: /home/fileapi/project/file-system
             url: 'http://files.fileapi.dev'
     tmp_dir: /tmp
 
