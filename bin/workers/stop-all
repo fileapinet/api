@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Stop all running Gearman workers. If supervisor is running, they will be restarted instantly.
+
+ps ax | grep 'gearman:worker:execute' | awk {'print $1'} | xargs kill -9

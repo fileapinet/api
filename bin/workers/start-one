@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Usage: start-worker [gearman worker name] [symfony environment]
+# Example: start-worker FileApiWorkerBundleWorkersConvertVideoWorker dev
+
+set -o nounset
+set -o errexit
+
+GEARMAN_WORKER=$1
+SYMFONY_ENVIRONMENT=$2
+
+/usr/bin/php /home/fileapi/project/api/current/bin/console \
+    gearman:worker:execute $GEARMAN_WORKER \
+    --env $SYMFONY_ENVIRONMENT \
+    -n
