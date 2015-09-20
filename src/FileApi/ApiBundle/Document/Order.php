@@ -18,8 +18,26 @@ class Order implements JsonSerializable
 
     /**
      * @MongoDB\Date
+     *
+     * The date the order was created.
      */
-    private $date;
+    private $createdAt;
+
+    /**
+     * @MongoDB\Hash
+     *
+     * The dates each result attribute was added (as \MongoDate objects, because @MongoDB\Hash does
+     * not automatically convert \DateTime objects to \MongoDate).
+     */
+    private $resultAttributeTimestamps;
+
+    /**
+     * @MongoDB\Date
+     *
+     * The date the final result attribute was added. This allows us to easily calculate the time
+     * each order takes to complete.
+     */
+    private $lastResultAttributeAddedAt;
 
     /**
      * @MongoDB\String
@@ -51,8 +69,9 @@ class Order implements JsonSerializable
         $this->requestUrl = $request->getUri();
         $this->fileSystemPath = $fileSystemPath;
         $this->fileSystemUrl = $fileSystemUrl;
-        $this->date = new \DateTime();
+        $this->createdAt = new \DateTime();
         $this->result = [];
+        $this->resultAttributeTimestamps = [];
 
         $this->input = [];
         $this->input['requestUrl'] = $request->getUri();
@@ -100,14 +119,15 @@ class Order implements JsonSerializable
         return $this->result;
     }
 
-    public function setResult($result)
-    {
-        $this->result = $result;
-    }
-
     public function addResultAttribute($key, $value)
     {
         $this->result[$key] = $value;
+
+        // See the comment for `resultAttributeTimestamps` for why this is a `\MongoDate` and not a
+        // `\DateTime`.
+        $this->resultAttributeTimestamps[$key] = new \MongoDate();
+
+        $this->lastResultAttributeAddedAt = new \DateTime();
     }
 
     public function jsonSerialize()
