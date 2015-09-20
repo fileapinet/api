@@ -3,13 +3,12 @@
 namespace FileApi\ApiBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use JsonSerializable;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @MongoDB\Document
  */
-class Order implements JsonSerializable
+class Order
 {
     /**
      * @MongoDB\Id
@@ -119,6 +118,16 @@ class Order implements JsonSerializable
         return $this->result;
     }
 
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    public function getLastResultAttributeAddedAt()
+    {
+        return $this->lastResultAttributeAddedAt;
+    }
+
     public function addResultAttribute($key, $value)
     {
         $this->result[$key] = $value;
@@ -128,18 +137,5 @@ class Order implements JsonSerializable
         $this->resultAttributeTimestamps[$key] = new \MongoDate();
 
         $this->lastResultAttributeAddedAt = new \DateTime();
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->id,
-            'date' => date_format($this->date, DATE_ISO8601),
-            'requestUrl' => $this->requestUrl,
-            'fileSystemPath' => $this->fileSystemPath,
-            'fileSystemUrl' => $this->fileSystemUrl,
-            'input' => $this->input,
-            'result' => $this->result,
-        ];
     }
 }

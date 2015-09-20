@@ -6,7 +6,7 @@ use FileApi\ApiBundle\Document\Order;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use FileApi\ApiBundle\View\OrderViewToCustomer;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -20,7 +20,7 @@ class DefaultController extends Controller
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersConvertGifToVideoWorker~createVideos', $order);
 
-        return new JsonResponse($order->getResult());
+        return new OrderViewToCustomer($order);
     }
 
     /**
@@ -31,7 +31,7 @@ class DefaultController extends Controller
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersConvertImageWorker~createImages', $order);
 
-        return new JsonResponse($order->getResult());
+        return new OrderViewToCustomer($order);
     }
 
     /**
@@ -44,7 +44,7 @@ class DefaultController extends Controller
             'targetMaxSizeInBytes' => $request->query->get('targetMaxSizeInBytes'),
         ]);
 
-        return new JsonResponse($order->getResult());
+        return new OrderViewToCustomer($order);
     }
 
     /**
@@ -58,7 +58,7 @@ class DefaultController extends Controller
             'targetHeight' => $request->query->get('targetHeight'),
         ]);
 
-        return new JsonResponse($order->getResult());
+        return new OrderViewToCustomer($order);
     }
 
     /**
@@ -69,7 +69,7 @@ class DefaultController extends Controller
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersConvertVideoWorker~createVideos', $order);
 
-        return new JsonResponse($order->getResult());
+        return new OrderViewToCustomer($order);
     }
 
     /**
@@ -80,7 +80,7 @@ class DefaultController extends Controller
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersConvertTtfFontWorker~createWebFonts', $order);
 
-        return new JsonResponse($order->getResult());
+        return new OrderViewToCustomer($order);
     }
 
     /**
@@ -91,7 +91,7 @@ class DefaultController extends Controller
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersWatermarkImageWorker~watermarkImage', $order);
 
-        return new JsonResponse($order->getResult());
+        return new OrderViewToCustomer($order);
     }
 
     /**
@@ -102,7 +102,7 @@ class DefaultController extends Controller
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersVirusScanWorker~scan', $order);
 
-        return new JsonResponse($order->getResult());
+        return new OrderViewToCustomer($order);
     }
 
     /**
@@ -118,7 +118,7 @@ class DefaultController extends Controller
 
         $order = $this->runWorker('FileApiWorkerBundleWorkersScreenshotWebPageWorker~screenshot', $order);
 
-        return new JsonResponse($order->getResult());
+        return new OrderViewToCustomer($order);
     }
 
     /**
