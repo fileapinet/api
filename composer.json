@@ -20,7 +20,8 @@
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
         "mmoreram/gearman-bundle": "~2.4",
-        "partnermarketing/file-system-bundle": "~0.2"
+        "partnermarketing/file-system-bundle": "~0.2",
+        "amyboyd/pgn-parser": "~0.2"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.8",
