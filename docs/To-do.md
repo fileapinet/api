@@ -7,8 +7,6 @@ API ideas:
 * Crack PDF password.
 * Crack Bitcoin wallet password.
 * Convert FinalDraft/Celtx files to other formats.
-* Add watermark to image.
-* PGN parser
 * FEN renderer
 * Negate image
 * Grayscale image
@@ -18,8 +16,6 @@ API ideas:
 
 Marketing site:
 
-* Example links for all APIs
-* Write terms of use.
 * Auto-generate site from worker documentation.
 
 General:
