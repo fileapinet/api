@@ -85,6 +85,11 @@ class Order implements JsonSerializable
         return $this->input;
     }
 
+    public function getInputAttribute($attribute)
+    {
+        return $this->input[$attribute];
+    }
+
     public function addInputAttribute($key, $value)
     {
         $this->input[$key] = $value;

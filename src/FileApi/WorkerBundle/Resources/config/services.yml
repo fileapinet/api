@@ -7,6 +7,14 @@ services:
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
+    file_api_worker.watermark_image_worker:
+        class: FileApi\WorkerBundle\Workers\WatermarkImageWorker
+        arguments:
+            - @doctrine_mongodb
+            - @monolog.logger
+            - @partnermarketing_file_system.factory
+            - %partnermarketing_file_system.tmp_dir%
+
     file_api_image.convert_gif_to_video_worker:
         class: FileApi\WorkerBundle\Workers\ConvertGifToVideoWorker
         arguments:

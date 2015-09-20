@@ -84,6 +84,17 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/watermark-image")
+     */
+    public function watermarkImageAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+        $order = $this->runWorker('FileApiWorkerBundleWorkersWatermarkImageWorker~watermarkImage', $order);
+
+        return new JsonResponse($order->getResult());
+    }
+
+    /**
      * @Route("/virus-scan")
      */
     public function virusScanAction(Request $request)
