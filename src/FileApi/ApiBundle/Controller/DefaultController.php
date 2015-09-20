@@ -106,6 +106,17 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/parse-pgn")
+     */
+    public function parsePgnAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+        $order = $this->runWorker('FileApiWorkerBundleWorkersPgnParserWorker~parse', $order);
+
+        return new OrderViewToCustomer($order);
+    }
+
+    /**
      * @Route("/screenshot")
      */
     public function screenshotWebPageAction(Request $request)
