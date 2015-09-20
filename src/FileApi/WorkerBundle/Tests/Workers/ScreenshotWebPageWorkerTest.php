@@ -31,7 +31,7 @@ class ScreenshotWebPageWorkerTest extends BaseUnitTest
             null,
             null
         );
-        $order->addInputAttribute('requestQueryParams', ['url' => 'http://bing.com/']);
+        $order->addInputAttribute('requestQueryParams', ['url' => 'http://fileapi.dev/']);
         $this->dm->persist($order);
         $this->dm->flush();
 
