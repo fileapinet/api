@@ -40,10 +40,11 @@ doctrine_mongodb:
         default:
             auto_mapping: true
 
-liip_doctrine_cache:
-    namespaces:
-        gearman:
+doctrine_cache:
+    providers:
+        gearman_cache:
             type: file_system
+            namespace: doctrine_cache.ns.gearman
 
 services:
     mongo.connection:

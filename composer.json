@@ -9,21 +9,21 @@
         "php": ">=5.5.0",
         "ext-gearman": "*",
         "ext-mongo": "*",
-        "symfony/symfony": "2.5.*",
+        "symfony/symfony": "~2.7",
         "symfony/monolog-bundle": "~2.4",
-        "doctrine/data-fixtures": "1.0.*",
-        "doctrine/doctrine-fixtures-bundle": "2.2.*",
-        "doctrine/mongodb-odm": "1.0.0-BETA9",
-        "doctrine/mongodb-odm-bundle": "3.0.0-BETA5",
+        "doctrine/data-fixtures": "~1.0",
+        "doctrine/doctrine-fixtures-bundle": "~2.2",
+        "doctrine/mongodb-odm": "~1.0.0",
+        "doctrine/mongodb-odm-bundle": "~3.0.0",
         "twig/extensions": "~1.0",
         "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
-        "mmoreram/gearman-bundle": "2.3.*",
-        "partnermarketing/file-system-bundle": "0.2.2",
-        "phpunit/phpunit": "~4.8"
+        "mmoreram/gearman-bundle": "~2.4",
+        "partnermarketing/file-system-bundle": "~0.2"
     },
     "require-dev": {
+        "phpunit/phpunit": "~4.8",
         "sensio/generator-bundle": "~2.3"
     },
     "scripts": {
