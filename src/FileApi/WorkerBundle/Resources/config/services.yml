@@ -3,7 +3,7 @@ services:
         class: FileApi\WorkerBundle\Workers\ConvertImageWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.convert_image_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
@@ -11,7 +11,7 @@ services:
         class: FileApi\WorkerBundle\Workers\WatermarkImageWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.watermark_image_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
@@ -19,7 +19,7 @@ services:
         class: FileApi\WorkerBundle\Workers\ConvertGifToVideoWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.convert_gif_to_video_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
@@ -27,7 +27,7 @@ services:
         class: FileApi\WorkerBundle\Workers\ReduceImageFileSizeWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.reduce_image_file_size_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
@@ -35,7 +35,7 @@ services:
         class: FileApi\WorkerBundle\Workers\ResizeImageDimensionsWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.resize_image_dimensions_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
@@ -43,7 +43,7 @@ services:
         class: FileApi\WorkerBundle\Workers\ConvertVideoWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.convert_video_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
@@ -51,7 +51,7 @@ services:
         class: FileApi\WorkerBundle\Workers\ConvertTtfFontWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.convert_ttf_font_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
@@ -59,7 +59,7 @@ services:
         class: FileApi\WorkerBundle\Workers\VirusScanWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.virus_scan_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
@@ -67,7 +67,7 @@ services:
         class: FileApi\WorkerBundle\Workers\ScreenshotWebPageWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.screenshot_web_page_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
 
@@ -75,6 +75,6 @@ services:
         class: FileApi\WorkerBundle\Workers\PgnParserWorker
         arguments:
             - @doctrine_mongodb
-            - @monolog.logger
+            - @monolog.logger.pgn_parser_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%

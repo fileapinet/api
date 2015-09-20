@@ -1,0 +1,64 @@
+monolog:
+    channels:
+        - convert_image_worker
+        - watermark_image_worker
+        - convert_gif_to_video_worker
+        - reduce_image_file_size_worker
+        - resize_image_dimensions_worker
+        - convert_video_worker
+        - convert_ttf_font_worker
+        - virus_scan_worker
+        - screenshot_web_page_worker
+        - pgn_parser_worker
+
+    handlers:
+        convert_image_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_convert_image_worker.log
+            level:      info
+            channels:   ["convert_image_worker"]
+        watermark_image_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_watermark_image_worker.log
+            level:      info
+            channels:   ["watermark_image_worker"]
+        convert_gif_to_video_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_convert_gif_to_video_worker.log
+            level:      info
+            channels:   ["convert_gif_to_video_worker"]
+        reduce_image_file_size_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_reduce_image_file_size_worker.log
+            level:      info
+            channels:   ["reduce_image_file_size_worker"]
+        resize_image_dimensions_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_resize_image_dimensions_worker.log
+            level:      info
+            channels:   ["resize_image_dimensions_worker"]
+        convert_video_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_convert_video_worker.log
+            level:      info
+            channels:   ["convert_video_worker"]
+        convert_ttf_font_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_convert_ttf_font_worker.log
+            level:      info
+            channels:   ["convert_ttf_font_worker"]
+        virus_scan_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_virus_scan_worker.log
+            level:      info
+            channels:   ["virus_scan_worker"]
+        screenshot_web_page_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_screenshot_web_page_worker.log
+            level:      info
+            channels:   ["screenshot_web_page_worker"]
+        pgn_parser_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_pgn_parser_worker.log
+            level:      info
+            channels:   ["pgn_parser_worker"]
