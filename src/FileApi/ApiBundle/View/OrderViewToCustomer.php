@@ -14,8 +14,6 @@ class OrderViewToCustomer extends JsonResponse
 
     private function jsonSerializeOrder(Order $order)
     {
-        $timeInSeconds = $order->getLastResultAttributeAddedAt()->getTimestamp() - $order->getCreatedAt()->getTimestamp();
-
         return [
             'orderId' => $order->getId(),
             'result' => $order->getResult(),
