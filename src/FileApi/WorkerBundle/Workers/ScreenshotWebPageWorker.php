@@ -44,6 +44,8 @@ class ScreenshotWebPageWorker extends AbstractWorker
         $fileSystemUrl = $this->fileSystem->getURL($fileSystemPath);
         $order->addResultAttribute('screenshot', $fileSystemUrl);
 
+        $order->addInternalAttribute('screenshotJsOutput', $output);
+
         $this->dm->persist($order);
         $this->dm->flush();
 

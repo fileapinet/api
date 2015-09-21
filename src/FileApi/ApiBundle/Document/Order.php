@@ -60,8 +60,17 @@ class Order
 
     /**
      * @MongoDB\Hash
+     *
+     * The result, show to the customer in their API response.
      */
     private $result;
+
+    /**
+     * @MongoDB\Hash
+     *
+     * Any attributes to record internally, that are not shown to the customer.
+     */
+    private $internalAttributes;
 
     public function __construct(Request $request, $fileSystemPath, $fileSystemUrl)
     {
@@ -71,6 +80,7 @@ class Order
         $this->createdAt = new \DateTime();
         $this->result = [];
         $this->resultAttributeTimestamps = [];
+        $this->internalAttributes = [];
 
         $this->input = [];
         $this->input['requestUrl'] = $request->getUri();
@@ -137,5 +147,10 @@ class Order
         $this->resultAttributeTimestamps[$key] = new \MongoDate();
 
         $this->lastResultAttributeAddedAt = new \DateTime();
+    }
+
+    public function addInternalAttribute($key, $value)
+    {
+        $this->internalAttributes[$key] = $value;
     }
 }

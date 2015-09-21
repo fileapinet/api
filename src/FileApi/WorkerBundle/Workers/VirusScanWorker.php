@@ -27,7 +27,9 @@ class VirusScanWorker extends AbstractWorker
         $file = $this->fileSystem->copyToLocalTemporaryFile($order->getFileSystemPath());
         $output = `clamscan -i --no-summary $file`;
         $isVirusFree = empty($output);
+
         $order->addResultAttribute('isVirusFree', $isVirusFree);
+        $order->addInternalAttribute('clamscanOutput', $output);
 
         $this->dm->persist($order);
         $this->dm->flush();
