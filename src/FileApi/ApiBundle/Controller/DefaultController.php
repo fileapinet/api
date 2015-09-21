@@ -148,14 +148,32 @@ class DefaultController extends Controller
      */
     private function getOrderFromRequest(Request $request)
     {
-        $sourceFileUrl = $request->query->get('source');
-        $this->container->get('monolog.logger.request')->log(LogLevel::INFO, 'Source: ' . $sourceFileUrl);
+        if ($request->query->has('source')) {
+            return $this->createOrderFromRequestWithSourceUrl($request, $request->query->get('source'));
+        } else {
+            throw new \Exception('@todo - error.');
+        }
+    }
 
-        $extension = strrev(explode('.', strrev($sourceFileUrl), 2)[0]);
+    /**
+     * @return \FileApi\ApiBundle\Document\Order
+     */
+    private function createOrderFromRequestWithSourceUrl(Request $request, $sourceFileUrl)
+    {
+        $this->container->get('monolog.logger.request')
+            ->log(LogLevel::INFO, 'Source: ' . $sourceFileUrl);
 
-        $fsPath = date('Y-m') . '/' . md5($sourceFileUrl) . '.' . $extension;
+        $fileExtension = strrev(explode('.', strrev($sourceFileUrl), 2)[0]);
+
+        $fsPath = sprintf('sources/%s/%s/%s.%s',
+            date('Y-m'),
+            date('d'),
+            md5($sourceFileUrl),
+            $fileExtension
+        );
 
         $fs = new FileSystem($this->get('partnermarketing_file_system.factory')->build());
+
         if (!$fs->exists($fsPath)) {
             $fs->writeContent(
                 $fsPath,
@@ -163,7 +181,15 @@ class DefaultController extends Controller
             );
         }
 
-        $order = new Order($request, $fsPath, $fs->getURL($fsPath));
+        return $this->createOrderFromFileSystemPathAndUrl($request, $fsPath, $fs->getURL($fsPath));
+    }
+
+    /**
+     * @return \FileApi\ApiBundle\Document\Order
+     */
+    private function createOrderFromFileSystemPathAndUrl(Request $request, $fsPath, $fsUrl)
+    {
+        $order = new Order($request, $fsPath, $fsUrl);
 
         $dm = $this->container->get('doctrine_mongodb')->getManager();
         $dm->persist($order);
