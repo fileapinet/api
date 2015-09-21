@@ -68,14 +68,14 @@ abstract class BaseControllerTest extends BaseUnitTest
     }
 
     protected function addFileParam($path, $originalName, $mimeType = 'application/octet-stream',
-            $size = null, $error = null)
+            $size = null, $error = null, $key = null)
     {
         if (!$size) {
             $size = filesize($path);
         }
 
         $file = new UploadedFile($path, $originalName, $mimeType, $size, $error);
-        $this->request->files->add(['file' => $file]);
+        $this->request->files->add(["$key"=> $file]);
     }
 
     private function mockGearman()

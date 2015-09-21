@@ -44,4 +44,19 @@ class DefaultControllerTest extends BaseControllerTest
         $this->assertMongoId($json['orderId']);
         $this->assertArrayHasKey('result', $json);
     }
+
+    public function testAnyActionUsingFileUpload()
+    {
+        $file = __DIR__ . '/burgers.jpg';
+        $this->addFileParam($file, 'burgers.jpg', 'image/jpeg', null, null, 'source');
+
+        $this->gearman->expects($this->once())->method('doNormalJob');
+
+        $response = $this->controller->convertImageToOtherFormatsAction($this->request);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $json = json_decode($response->getContent(), true);
+        $this->assertMongoId($json['orderId']);
+        $this->assertArrayHasKey('result', $json);
+    }
 }

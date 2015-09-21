@@ -8,6 +8,7 @@ use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FileApi\ApiBundle\View\OrderViewToCustomer;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -165,7 +166,7 @@ class DefaultController extends Controller
         } else if ($request->request->has('source')) {
             return $this->createOrderFromRequestWithSourceUrl($request, $request->request->get('source'));
         } else if ($request->files->has('source')) {
-            throw new \Exception('@todo - handle file uploads.');
+            return $this->createOrderFromRequestWithUploadedFile($request, $request->files->get('source'));
         } else {
             throw new \Exception('@todo - error.');
         }
@@ -188,24 +189,39 @@ class DefaultController extends Controller
             $fileExtension
         );
 
-        $fs = new FileSystem($this->get('partnermarketing_file_system.factory')->build());
-
-        if (!$fs->exists($fsPath)) {
-            $fs->writeContent(
-                $fsPath,
-                file_get_contents($sourceFileUrl)
-            );
-        }
-
-        return $this->createOrderFromFileSystemPathAndUrl($request, $fsPath, $fs->getURL($fsPath));
+        return $this->createOrderFromFileSystemPathAndContent($request, $fsPath, file_get_contents($sourceFileUrl));
     }
 
     /**
      * @return \FileApi\ApiBundle\Document\Order
      */
-    private function createOrderFromFileSystemPathAndUrl(Request $request, $fsPath, $fsUrl)
+    private function createOrderFromRequestWithUploadedFile(Request $request, UploadedFile $file)
     {
-        $order = new Order($request, $fsPath, $fsUrl);
+        $this->container->get('monolog.logger.request')
+            ->log(LogLevel::INFO, 'File uploaded: ' . $file->getClientOriginalName());
+
+        $fsPath = sprintf('sources/%s/%s/%s.%s',
+            date('Y-m'),
+            date('d'),
+            md5(file_get_contents($file->getRealPath())),
+            $file->guessExtension()
+        );
+
+        return $this->createOrderFromFileSystemPathAndContent($request, $fsPath, file_get_contents($file->getRealPath()));
+    }
+
+    /**
+     * @return \FileApi\ApiBundle\Document\Order
+     */
+    private function createOrderFromFileSystemPathAndContent(Request $request, $fsPath, $content)
+    {
+        $fs = new FileSystem($this->get('partnermarketing_file_system.factory')->build());
+
+        if (!$fs->exists($fsPath)) {
+            $fs->writeContent($fsPath, $content);
+        }
+
+        $order = new Order($request, $fsPath, $fs->getURL($fsPath));
 
         $dm = $this->container->get('doctrine_mongodb')->getManager();
         $dm->persist($order);
