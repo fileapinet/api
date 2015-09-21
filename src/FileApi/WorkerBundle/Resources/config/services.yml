@@ -78,3 +78,11 @@ services:
             - @monolog.logger.pgn_parser_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
+
+    file_api_worker.detect_porn_worker:
+        class: FileApi\WorkerBundle\Workers\DetectPornWorker
+        arguments:
+            - @doctrine_mongodb
+            - @monolog.logger.detect_porn_worker
+            - @partnermarketing_file_system.factory
+            - %partnermarketing_file_system.tmp_dir%

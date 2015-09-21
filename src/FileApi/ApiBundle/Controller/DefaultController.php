@@ -117,6 +117,17 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/detect-porn")
+     */
+    public function detectPornAction(Request $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+        $order = $this->runWorker('FileApiWorkerBundleWorkersDetectPornWorker~detectPorn', $order);
+
+        return new OrderViewToCustomer($order);
+    }
+
+    /**
      * @Route("/screenshot")
      */
     public function screenshotWebPageAction(Request $request)

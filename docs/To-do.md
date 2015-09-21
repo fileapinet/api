@@ -12,7 +12,6 @@ API ideas:
 * Grayscale image
 * .doc to .pdf and vice versa
 * Convert between tarball/zip/gzip/7zip
-* Detect porn in image or video
 
 Marketing site:
 

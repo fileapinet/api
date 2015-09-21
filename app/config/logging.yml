@@ -10,6 +10,7 @@ monolog:
         - virus_scan_worker
         - screenshot_web_page_worker
         - pgn_parser_worker
+        - detect_porn_worker
 
     handlers:
         convert_image_worker:
@@ -62,3 +63,8 @@ monolog:
             path:       %kernel.logs_dir%/%kernel.environment%_pgn_parser_worker.log
             level:      info
             channels:   ["pgn_parser_worker"]
+        detect_porn_worker:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_detect_porn_worker.log
+            level:      info
+            channels:   ["detect_porn_worker"]
