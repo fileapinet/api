@@ -8,12 +8,14 @@ use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FileApi\ApiBundle\View\OrderViewToCustomer;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class DefaultController extends Controller
 {
     /**
      * @Route("/convert-gif-to-videos")
+     * @Method({"GET", "POST"})
      */
     public function convertGifToVideosAction(Request $request)
     {
@@ -25,6 +27,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/convert-image-to-other-formats")
+     * @Method({"GET", "POST"})
      */
     public function convertImageToOtherFormatsAction(Request $request)
     {
@@ -36,6 +39,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/reduce-image-file-size")
+     * @Method({"GET", "POST"})
      */
     public function reduceImageFileSizeAction(Request $request)
     {
@@ -49,6 +53,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/resize-image")
+     * @Method({"GET", "POST"})
      */
     public function resizeImageAction(Request $request)
     {
@@ -63,6 +68,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/convert-video-to-other-formats")
+     * @Method({"GET", "POST"})
      */
     public function convertVideoToOtherFormatsAction(Request $request)
     {
@@ -74,6 +80,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/convert-ttf-font-to-web-fonts")
+     * @Method({"GET", "POST"})
      */
     public function convertTtfFontToWebFontsAction(Request $request)
     {
@@ -85,6 +92,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/watermark-image")
+     * @Method({"GET", "POST"})
      */
     public function watermarkImageAction(Request $request)
     {
@@ -96,6 +104,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/virus-scan")
+     * @Method({"GET", "POST"})
      */
     public function virusScanAction(Request $request)
     {
@@ -107,6 +116,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/parse-pgn")
+     * @Method({"GET", "POST"})
      */
     public function parsePgnAction(Request $request)
     {
@@ -118,6 +128,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/detect-porn")
+     * @Method({"GET", "POST"})
      */
     public function detectPornAction(Request $request)
     {
@@ -129,6 +140,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/screenshot")
+     * @Method({"GET", "POST"})
      */
     public function screenshotWebPageAction(Request $request)
     {
@@ -150,6 +162,10 @@ class DefaultController extends Controller
     {
         if ($request->query->has('source')) {
             return $this->createOrderFromRequestWithSourceUrl($request, $request->query->get('source'));
+        } else if ($request->request->has('source')) {
+            return $this->createOrderFromRequestWithSourceUrl($request, $request->request->get('source'));
+        } else if ($request->files->has('source')) {
+            throw new \Exception('@todo - handle file uploads.');
         } else {
             throw new \Exception('@todo - error.');
         }

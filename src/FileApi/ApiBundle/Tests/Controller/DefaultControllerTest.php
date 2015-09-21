@@ -30,4 +30,18 @@ class DefaultControllerTest extends BaseControllerTest
         $this->assertMongoId($json['orderId']);
         $this->assertArrayHasKey('result', $json);
     }
+
+    public function testAnyActionUsingSourceUrlInPOSTBody()
+    {
+        $this->addPOSTParam('source', 'http://api.fileapi.dev/fixtures/burgers.jpg');
+
+        $this->gearman->expects($this->once())->method('doNormalJob');
+
+        $response = $this->controller->convertImageToOtherFormatsAction($this->request);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $json = json_decode($response->getContent(), true);
+        $this->assertMongoId($json['orderId']);
+        $this->assertArrayHasKey('result', $json);
+    }
 }
