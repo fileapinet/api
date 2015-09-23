@@ -6,8 +6,9 @@ use FileApi\ApiBundle\Document\Order;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use FileApi\ApiBundle\Model\HttpRequest as FileApiRequest;
 use FileApi\ApiBundle\View\OrderViewToCustomer;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -18,7 +19,7 @@ class DefaultController extends Controller
      * @Route("/convert-gif-to-videos")
      * @Method({"GET", "POST"})
      */
-    public function convertGifToVideosAction(Request $request)
+    public function convertGifToVideosAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersConvertGifToVideoWorker~createVideos', $order);
@@ -30,7 +31,7 @@ class DefaultController extends Controller
      * @Route("/convert-image-to-other-formats")
      * @Method({"GET", "POST"})
      */
-    public function convertImageToOtherFormatsAction(Request $request)
+    public function convertImageToOtherFormatsAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersConvertImageWorker~createImages', $order);
@@ -42,7 +43,7 @@ class DefaultController extends Controller
      * @Route("/reduce-image-file-size")
      * @Method({"GET", "POST"})
      */
-    public function reduceImageFileSizeAction(Request $request)
+    public function reduceImageFileSizeAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersReduceImageFileSizeWorker~reduceImageFileSize', $order, [
@@ -56,7 +57,7 @@ class DefaultController extends Controller
      * @Route("/resize-image")
      * @Method({"GET", "POST"})
      */
-    public function resizeImageAction(Request $request)
+    public function resizeImageAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersResizeImageDimensionsWorker~resizeImageDimensions', $order, [
@@ -71,7 +72,7 @@ class DefaultController extends Controller
      * @Route("/convert-video-to-other-formats")
      * @Method({"GET", "POST"})
      */
-    public function convertVideoToOtherFormatsAction(Request $request)
+    public function convertVideoToOtherFormatsAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersConvertVideoWorker~createVideos', $order);
@@ -83,7 +84,7 @@ class DefaultController extends Controller
      * @Route("/convert-ttf-font-to-web-fonts")
      * @Method({"GET", "POST"})
      */
-    public function convertTtfFontToWebFontsAction(Request $request)
+    public function convertTtfFontToWebFontsAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersConvertTtfFontWorker~createWebFonts', $order);
@@ -95,7 +96,7 @@ class DefaultController extends Controller
      * @Route("/watermark-image")
      * @Method({"GET", "POST"})
      */
-    public function watermarkImageAction(Request $request)
+    public function watermarkImageAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersWatermarkImageWorker~watermarkImage', $order);
@@ -107,7 +108,7 @@ class DefaultController extends Controller
      * @Route("/virus-scan")
      * @Method({"GET", "POST"})
      */
-    public function virusScanAction(Request $request)
+    public function virusScanAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersVirusScanWorker~scan', $order);
@@ -119,7 +120,7 @@ class DefaultController extends Controller
      * @Route("/parse-pgn")
      * @Method({"GET", "POST"})
      */
-    public function parsePgnAction(Request $request)
+    public function parsePgnAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersPgnParserWorker~parse', $order);
@@ -131,7 +132,7 @@ class DefaultController extends Controller
      * @Route("/detect-porn")
      * @Method({"GET", "POST"})
      */
-    public function detectPornAction(Request $request)
+    public function detectPornAction(SymfonyRequest $request)
     {
         $order = $this->getOrderFromRequest($request);
         $order = $this->runWorker('FileApiWorkerBundleWorkersDetectPornWorker~detectPorn', $order);
@@ -143,9 +144,9 @@ class DefaultController extends Controller
      * @Route("/screenshot")
      * @Method({"GET", "POST"})
      */
-    public function screenshotWebPageAction(Request $request)
+    public function screenshotWebPageAction(SymfonyRequest $request)
     {
-        $order = new Order($request, null, null);
+        $order = $this->getOrderFromRequest($request);
 
         $dm = $this->container->get('doctrine_mongodb')->getManager();
         $dm->persist($order);
@@ -159,23 +160,25 @@ class DefaultController extends Controller
     /**
      * @return \FileApi\ApiBundle\Document\Order
      */
-    private function getOrderFromRequest(Request $request)
+    private function getOrderFromRequest(SymfonyRequest $request)
     {
-        if ($request->query->has('source')) {
-            return $this->createOrderFromRequestWithSourceUrl($request, $request->query->get('source'));
-        } else if ($request->request->has('source')) {
-            return $this->createOrderFromRequestWithSourceUrl($request, $request->request->get('source'));
-        } else if ($request->files->has('source')) {
-            return $this->createOrderFromRequestWithUploadedFile($request, $request->files->get('source'));
+        $request = new FileApiRequest($request);
+
+        if ($request->hasQueryStringParam('source')) {
+            return $this->createOrderFromRequestWithSourceUrl($request, $request->getQueryStringParams()->get('source'));
+        } else if ($request->hasBodyParam('source')) {
+            return $this->createOrderFromRequestWithSourceUrl($request, $request->getBodyParams()->get('source'));
+        } else if ($request->hasFileParam('source')) {
+            return $this->createOrderFromRequestWithUploadedFile($request, $request->getFileParams()->get('source'));
         } else {
-            throw new \Exception('@todo - error.');
+            return $this->createOrderWithoutFile($request);
         }
     }
 
     /**
      * @return \FileApi\ApiBundle\Document\Order
      */
-    private function createOrderFromRequestWithSourceUrl(Request $request, $sourceFileUrl)
+    private function createOrderFromRequestWithSourceUrl(FileApiRequest $request, $sourceFileUrl)
     {
         $this->container->get('monolog.logger.request')
             ->log(LogLevel::INFO, 'Source: ' . $sourceFileUrl);
@@ -195,7 +198,7 @@ class DefaultController extends Controller
     /**
      * @return \FileApi\ApiBundle\Document\Order
      */
-    private function createOrderFromRequestWithUploadedFile(Request $request, UploadedFile $file)
+    private function createOrderFromRequestWithUploadedFile(FileApiRequest $request, UploadedFile $file)
     {
         $this->container->get('monolog.logger.request')
             ->log(LogLevel::INFO, 'File uploaded: ' . $file->getClientOriginalName());
@@ -213,7 +216,7 @@ class DefaultController extends Controller
     /**
      * @return \FileApi\ApiBundle\Document\Order
      */
-    private function createOrderFromFileSystemPathAndContent(Request $request, $fsPath, $content)
+    private function createOrderFromFileSystemPathAndContent(FileApiRequest $request, $fsPath, $content)
     {
         $fs = new FileSystem($this->get('partnermarketing_file_system.factory')->build());
 
@@ -222,6 +225,20 @@ class DefaultController extends Controller
         }
 
         $order = new Order($request, $fsPath, $fs->getURL($fsPath));
+
+        $dm = $this->container->get('doctrine_mongodb')->getManager();
+        $dm->persist($order);
+        $dm->flush();
+
+        return $order;
+    }
+
+    /**
+     * @return \FileApi\ApiBundle\Document\Order
+     */
+    private function createOrderWithoutFile(FileApiRequest $request)
+    {
+        $order = new Order($request);
 
         $dm = $this->container->get('doctrine_mongodb')->getManager();
         $dm->persist($order);

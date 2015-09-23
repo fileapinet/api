@@ -23,7 +23,7 @@ class DefaultControllerTest extends BaseControllerTest
 
         $this->gearman->expects($this->once())->method('doNormalJob');
 
-        $response = $this->controller->convertImageToOtherFormatsAction($this->request);
+        $response = $this->controller->convertImageToOtherFormatsAction($this->symfonyRequest);
         $this->assertEquals(200, $response->getStatusCode());
 
         $json = json_decode($response->getContent(), true);
@@ -37,7 +37,7 @@ class DefaultControllerTest extends BaseControllerTest
 
         $this->gearman->expects($this->once())->method('doNormalJob');
 
-        $response = $this->controller->convertImageToOtherFormatsAction($this->request);
+        $response = $this->controller->convertImageToOtherFormatsAction($this->symfonyRequest);
         $this->assertEquals(200, $response->getStatusCode());
 
         $json = json_decode($response->getContent(), true);
@@ -52,7 +52,7 @@ class DefaultControllerTest extends BaseControllerTest
 
         $this->gearman->expects($this->once())->method('doNormalJob');
 
-        $response = $this->controller->convertImageToOtherFormatsAction($this->request);
+        $response = $this->controller->convertImageToOtherFormatsAction($this->symfonyRequest);
         $this->assertEquals(200, $response->getStatusCode());
 
         $json = json_decode($response->getContent(), true);

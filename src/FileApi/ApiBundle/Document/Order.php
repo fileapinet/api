@@ -3,7 +3,7 @@
 namespace FileApi\ApiBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use Symfony\Component\HttpFoundation\Request;
+use FileApi\ApiBundle\Model\HttpRequest;
 
 /**
  * @MongoDB\Document
@@ -72,7 +72,7 @@ class Order
      */
     private $internalAttributes;
 
-    public function __construct(Request $request, $fileSystemPath, $fileSystemUrl)
+    public function __construct(HttpRequest $request, $fileSystemPath, $fileSystemUrl)
     {
         $this->requestUrl = $request->getUri();
         $this->fileSystemPath = $fileSystemPath;
@@ -83,9 +83,8 @@ class Order
         $this->internalAttributes = [];
 
         $this->input = [];
-        $this->input['requestUrl'] = $request->getUri();
-        $this->input['requestQueryParams'] = $request->query->all();
-        $this->input['requestBodyParams'] = $request->request->all();
+
+        $this->setRequest($request);
     }
 
     public function getId()
@@ -152,5 +151,12 @@ class Order
     public function addInternalAttribute($key, $value)
     {
         $this->internalAttributes[$key] = $value;
+    }
+
+    private function setRequest(HttpRequest $request)
+    {
+        $this->input['requestUrl'] = $request->getUri();
+        $this->input['requestQueryParams'] = $request->getQueryStringParams()->all();
+        $this->input['requestBodyParams'] = $request->getBodyParams()->all();
     }
 }

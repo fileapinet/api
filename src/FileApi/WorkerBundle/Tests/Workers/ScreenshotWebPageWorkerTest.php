@@ -3,10 +3,11 @@
 namespace FileApi\WorkerBundle\Tests\Workers;
 
 use FileApi\ApiBundle\Document\Order;
+use FileApi\ApiBundle\Model\HttpRequest;
 use FileApi\WorkerBundle\Workers\ScreenshotWebPageWorker;
 use FileApi\Tests\Base\BaseUnitTest;
 use Partnermarketing\FileSystemBundle\FileSystem\FileSystem;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 require_once dirname(__DIR__).'/../../../../app/AppKernel.php';
 
@@ -25,7 +26,7 @@ class ScreenshotWebPageWorkerTest extends BaseUnitTest
 
     public function testScreenshot()
     {
-        $request = new Request();
+        $request = new HttpRequest(new SymfonyRequest());
         $order = new Order(
             $request,
             null,

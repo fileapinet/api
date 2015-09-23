@@ -3,7 +3,9 @@
 namespace FileApi\Tests\Base;
 
 use FileApi\ApiBundle\Document\Order;
+use FileApi\ApiBundle\Model\HttpRequest as FileApiRequest;
 use Partnermarketing\FileSystemBundle\ServerFileSystem\ServerFileSystem;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 abstract class BaseUnitTest extends \PHPUnit_Framework_TestCase
 {
@@ -52,7 +54,7 @@ abstract class BaseUnitTest extends \PHPUnit_Framework_TestCase
 
     protected function getOrder($fileSystemPath)
     {
-        $request = new \Symfony\Component\HttpFoundation\Request();
+        $request = new FileApiRequest(new SymfonyRequest());
 
         $order = new Order(
             $request,

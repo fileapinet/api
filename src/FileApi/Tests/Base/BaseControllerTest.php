@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 abstract class BaseControllerTest extends BaseUnitTest
 {
-    protected $request;
+    protected $symfonyRequest;
 
     protected $dm;
 
@@ -17,10 +17,10 @@ abstract class BaseControllerTest extends BaseUnitTest
     {
         parent::setUp();
 
-        $this->request = new Request();
+        $this->symfonyRequest = new Request();
 
-        $this->container->set('request', $this->request);
-        $this->container->get('request_stack')->push($this->request);
+        $this->container->set('request', $this->symfonyRequest);
+        $this->container->get('request_stack')->push($this->symfonyRequest);
 
         $this->mockGearman();
     }
@@ -49,22 +49,22 @@ abstract class BaseControllerTest extends BaseUnitTest
 
     protected function addGETParam($key, $value)
     {
-        $this->request->query->set($key, $value);
+        $this->symfonyRequest->query->set($key, $value);
     }
 
     protected function addGETParams(array $params)
     {
-        $this->request->query->add($params);
+        $this->symfonyRequest->query->add($params);
     }
 
     protected function addPOSTParam($key, $value)
     {
-        $this->request->request->set($key, $value);
+        $this->symfonyRequest->request->set($key, $value);
     }
 
     protected function addPOSTParams(array $params)
     {
-        $this->request->request->add($params);
+        $this->symfonyRequest->request->add($params);
     }
 
     protected function addFileParam($path, $originalName, $mimeType = 'application/octet-stream',
@@ -75,7 +75,7 @@ abstract class BaseControllerTest extends BaseUnitTest
         }
 
         $file = new UploadedFile($path, $originalName, $mimeType, $size, $error);
-        $this->request->files->add(["$key"=> $file]);
+        $this->symfonyRequest->files->add(["$key"=> $file]);
     }
 
     private function mockGearman()
