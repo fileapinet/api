@@ -158,5 +158,7 @@ class Order
         $this->input['requestUrl'] = $request->getUri();
         $this->input['requestQueryParams'] = $request->getQueryStringParams()->all();
         $this->input['requestBodyParams'] = $request->getBodyParams()->all();
+        $this->input['requestHeaders'] = $request->getHeaders()->all();
+        $this->input['requestHeadersCustomToUs'] = $request->getHeadersCustomToUs()->all();
     }
 }

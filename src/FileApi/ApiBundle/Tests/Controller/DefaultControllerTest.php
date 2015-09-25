@@ -20,6 +20,7 @@ class DefaultControllerTest extends BaseControllerTest
     public function testAnyActionUsingSourceUrlInQueryString()
     {
         $this->addGETParam('source', 'http://api.fileapi.dev/fixtures/burgers.jpg');
+        $this->addHeader('X-FileApi-ApiKey', 'abc123');
 
         $this->gearman->expects($this->once())->method('doNormalJob');
 

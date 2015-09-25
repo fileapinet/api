@@ -3,6 +3,7 @@
 namespace FileApi\ApiBundle\Model;
 
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\HeaderBag;
 
 class HttpRequest extends SymfonyRequest
 {
@@ -67,5 +68,29 @@ class HttpRequest extends SymfonyRequest
     public function hasFileParam($param)
     {
         return $this->symfonyRequest->files->has($param);
+    }
+
+    /**
+     * @return HeaderBag
+     */
+    public function getHeaders()
+    {
+        return $this->symfonyRequest->headers;
+    }
+
+    /**
+     * @return HeaderBag
+     */
+    public function getHeadersCustomToUs()
+    {
+        $headersCustomToUs = [];
+
+        foreach ($this->symfonyRequest->headers->all() as $key => $value) {
+            if (strpos(strtolower($key), 'x-fileapi-') === 0) {
+                $headersCustomToUs[$key] = $value;
+            }
+        }
+
+        return new HeaderBag($headersCustomToUs);
     }
 }

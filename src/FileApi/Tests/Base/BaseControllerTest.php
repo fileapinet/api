@@ -67,6 +67,11 @@ abstract class BaseControllerTest extends BaseUnitTest
         $this->symfonyRequest->request->add($params);
     }
 
+    protected function addHeader($key, $value)
+    {
+        $this->symfonyRequest->headers->set($key, $value);
+    }
+
     protected function addFileParam($path, $originalName, $mimeType = 'application/octet-stream',
             $size = null, $error = null, $key = null)
     {
