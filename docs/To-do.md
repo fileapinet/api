@@ -16,8 +16,12 @@ API ideas:
 Marketing site:
 
 * Auto-generate site from worker documentation.
+* Make it look pretty.
 
 General:
 
 * Restrict the "demo" API key to fileapi.net fixture files.
 * PHP client library.
+* Ruby client library.
+* Node client library.
+* Java client library.
