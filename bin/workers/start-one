@@ -12,4 +12,4 @@ SYMFONY_ENVIRONMENT=$2
 /usr/bin/php /home/fileapi/project/api/current/bin/console \
     gearman:worker:execute $GEARMAN_WORKER \
     --env $SYMFONY_ENVIRONMENT \
-    -n
+    -n -v
