@@ -238,7 +238,7 @@ class DefaultController extends Controller
      */
     private function createOrderWithoutFile(FileApiRequest $request)
     {
-        $order = new Order($request);
+        $order = new Order($request, null, null);
 
         $dm = $this->container->get('doctrine_mongodb')->getManager();
         $dm->persist($order);

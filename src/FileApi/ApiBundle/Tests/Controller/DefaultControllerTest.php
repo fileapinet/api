@@ -60,4 +60,20 @@ class DefaultControllerTest extends BaseControllerTest
         $this->assertMongoId($json['orderId']);
         $this->assertArrayHasKey('result', $json);
     }
+
+    public function testAnyActionWithoutSourceUrlOrFile()
+    {
+        $this->addGETParam('url', 'http://fileapi.dev/');
+
+        $this->gearman->expects($this->once())
+            ->method('doNormalJob')
+            ->with('FileApiWorkerBundleWorkersScreenshotWebPageWorker~screenshot');
+
+        $response = $this->controller->screenshotWebPageAction($this->symfonyRequest);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $json = json_decode($response->getContent(), true);
+        $this->assertMongoId($json['orderId']);
+        $this->assertArrayHasKey('result', $json);
+    }
 }
