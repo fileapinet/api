@@ -4,6 +4,7 @@ namespace FileApi\WorkerBundle\Workers;
 
 use Mmoreram\GearmanBundle\Driver\Gearman;
 use Psr\Log\LogLevel;
+use FileApi\ApiBundle\Document\Order;
 use FileApi\WorkerBundle\Workers\AbstractWorker;
 
 /**
@@ -39,30 +40,10 @@ class ConvertTtfFontWorker extends AbstractWorker
         $tmpFile = $this->fileSystem->copyToLocalTemporaryFile($order->getFileSystemPath());
         rename($tmpFile, $tmpFile . '.ttf');
         $tmpFile = $tmpFile . '.ttf';
-        $ttfFileName = strrev(explode('/', strrev(preg_replace('/\.ttf$/', '', $order->getFileSystemPath())), 2)[0]);
+        $ttfFileBasename = strrev(explode('/', strrev(preg_replace('/\.ttf$/', '', $order->getFileSystemPath())), 2)[0]);
 
-        $bashFile = __DIR__ . '/../Resources/bash/create-web-fonts';
-        if (!file_exists($bashFile)) {
-            throw new \Exception('create-web-fonts does not exist');
-        }
-        if (!is_executable($bashFile)) {
-            throw new \Exception(realpath($bashFile) . ' is not executable');
-        }
-
-        $output = `$bashFile $tmpFile 2>&1`;
-        foreach (['eot', 'svg', 'woff', 'otf'] as $extension) {
-            $generatedFile = preg_replace('/\.ttf$/', '', $tmpFile) . '.' . $extension;
-
-            $this->logger->log(LogLevel::INFO, sprintf('Generated %s. File size %d bytes.', $generatedFile, filesize($generatedFile)));
-
-            $fileSystemPath = $order->getId() . '/' .$ttfFileName . '.' . $extension;
-            $this->fileSystem->writeContent($fileSystemPath, file_get_contents($generatedFile));
-
-            $fileSystemUrl = $this->fileSystem->getURL($fileSystemPath);
-            $order->addResultAttribute($extension, $fileSystemUrl);
-
-            unlink($generatedFile);
-        }
+        $this->createOtherFontFiles($order, $tmpFile);
+        $this->addOtherFontFilesToOrderResult($order, $tmpFile, $ttfFileBasename);
 
         unlink($tmpFile);
 
@@ -72,5 +53,45 @@ class ConvertTtfFontWorker extends AbstractWorker
         $this->logger->log(LogLevel::INFO, 'Finished', $workload);
 
         return $job->sendComplete('1');
+    }
+
+    private function createOtherFontFiles(Order $order, $tmpOriginalFile)
+    {
+        $bashScript = $this->getBashScript();
+
+        $output = `$bashScript $tmpOriginalFile 2>&1`;
+        $order->addInternalAttribute('createWebFontsBashScriptOutput', $output);
+        $this->dm->persist($order);
+        $this->dm->flush();
+    }
+
+    private function getBashScript()
+    {
+        $bashScript = __DIR__ . '/../Resources/bash/create-web-fonts';
+        if (!file_exists($bashScript)) {
+            throw new \Exception('create-web-fonts does not exist');
+        }
+        if (!is_executable($bashScript)) {
+            throw new \Exception(realpath($bashScript) . ' is not executable');
+        }
+
+        return $bashScript;
+    }
+
+    private function addOtherFontFilesToOrderResult(Order $order, $tmpOriginalFile, $ttfFileBasename)
+    {
+        foreach (['eot', 'svg', 'woff', 'otf'] as $extension) {
+            $generatedFile = preg_replace('/\.ttf$/', '', $tmpOriginalFile) . '.' . $extension;
+
+            $this->logger->log(LogLevel::INFO, sprintf('Generated %s. File size %d bytes.', $generatedFile, filesize($generatedFile)));
+
+            $fileSystemPath = $order->getId() . '/' .$ttfFileBasename . '.' . $extension;
+            $this->fileSystem->writeContent($fileSystemPath, file_get_contents($generatedFile));
+
+            $fileSystemUrl = $this->fileSystem->getURL($fileSystemPath);
+            $order->addResultAttribute($extension, $fileSystemUrl);
+
+            unlink($generatedFile);
+        }
     }
 }

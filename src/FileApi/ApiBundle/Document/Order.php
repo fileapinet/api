@@ -150,6 +150,8 @@ class Order
 
     public function addInternalAttribute($key, $value)
     {
+        $value = utf8_encode(utf8_decode($value));
+
         $this->internalAttributes[$key] = $value;
     }
 
