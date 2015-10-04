@@ -26,12 +26,23 @@ class ReduceImageFileSizeWorker extends AbstractWorker
 
         $fileExtension = strtolower(strrev(explode('.', strrev($order->getFileSystemPath()), 2)[0]));
 
+        $targetMaxSizeInBytes = $workload['targetMaxSizeInBytes'];
+        if (!ctype_digit($targetMaxSizeInBytes)) {
+            $this->logger->log(LogLevel::ERROR, 'Target max file size is not an integer', [
+                'targetMaxSizeInBytes' => $targetMaxSizeInBytes,
+            ]);
+            $order->addResultAttribute('error', 'The target max file size (' . $targetMaxSizeInBytes . ') is not an integer.');
+            $this->dm->persist($order);
+            $this->dm->flush();
+            return $job->sendComplete('1');
+        }
+
         if ($fileExtension === 'jpg' || $fileExtension === 'jpeg') {
-            $this->reduce('jpg', $order, $workload['targetMaxSizeInBytes']);
+            $this->reduce('jpg', $order, $targetMaxSizeInBytes);
 
             return $job->sendComplete('1');
         } elseif ($fileExtension === 'png') {
-            $this->reduce('png', $order, $workload['targetMaxSizeInBytes']);
+            $this->reduce('png', $order, $targetMaxSizeInBytes);
 
             return $job->sendComplete('1');
         } else {
@@ -86,7 +97,7 @@ class ReduceImageFileSizeWorker extends AbstractWorker
                 'originalSize' => $originalSize,
                 'orderId' => $order->getId(),
             ]);
-            $order->addResultAttribute('error', 'Unable to get this file below the target max size. Only managed to get to: ' . $resultSize);
+            $order->addResultAttribute('error', 'Unable to get this file below the target max size (' . $targetMaxSizeInBytes . ' bytes). Only managed to get to: ' . $resultSize);
             $this->dm->persist($order);
             $this->dm->flush();
             return;

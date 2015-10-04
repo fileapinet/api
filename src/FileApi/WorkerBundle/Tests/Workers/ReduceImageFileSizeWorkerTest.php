@@ -48,6 +48,7 @@ class ReduceImageFileSizeWorkerTest extends BaseUnitTest
             ->will($this->returnCallback(function () use ($order) {
                 return json_encode([
                     'orderId' => $order->getId(),
+                    'targetMaxSizeInBytes' => 30000,
                 ]);
             }));
         $fakeGearmanJob->expects($this->once())->method('sendFail');
