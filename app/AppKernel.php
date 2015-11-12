@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new FileApi\WorkerBundle\FileApiWorkerBundle(),
             new FileApi\ApiBundle\FileApiApiBundle(),
             new FileApi\CustomerBundle\FileApiCustomerBundle(),
+            new AmyBoyd\HistoryBundle\AmyBoydHistoryBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

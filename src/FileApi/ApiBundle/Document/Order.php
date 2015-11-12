@@ -2,6 +2,7 @@
 
 namespace FileApi\ApiBundle\Document;
 
+use AmyBoyd\HistoryBundle\Document\HasHistoryTrait;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use FileApi\ApiBundle\Model\HttpRequest;
 
@@ -10,6 +11,8 @@ use FileApi\ApiBundle\Model\HttpRequest;
  */
 class Order
 {
+    use HasHistoryTrait;
+
     /**
      * @MongoDB\Id
      */

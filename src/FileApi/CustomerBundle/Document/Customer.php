@@ -2,6 +2,7 @@
 
 namespace FileApi\CustomerBundle\Document;
 
+use AmyBoyd\HistoryBundle\Document\HasHistoryTrait;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
@@ -9,6 +10,8 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  */
 class Customer
 {
+    use HasHistoryTrait;
+
     /**
      * @MongoDB\Id
      */
