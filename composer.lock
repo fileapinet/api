@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fa76e2d111a5b0c5f34931ceb080ae0a",
-    "content-hash": "502e343c4485a88d49f0a1e7232ee3d9",
+    "hash": "c1d8fe5368598732682adce5c1e8eeaf",
+    "content-hash": "b813fb7f270801652484c23f73473197",
     "packages": [
         {
             "name": "amyboyd/history-bundle",
@@ -2019,6 +2019,39 @@
                 "templating"
             ],
             "time": "2015-11-05 12:49:06"
+        },
+        {
+            "name": "twogether/sweet-qa",
+            "version": "0.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Twogether/sweet-qa.git",
+                "reference": "6c610eaa743787279e59c5485b84c280b9eb12c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Twogether/sweet-qa/zipball/6c610eaa743787279e59c5485b84c280b9eb12c6",
+                "reference": "6c610eaa743787279e59c5485b84c280b9eb12c6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/console": "2.*",
+                "symfony/css-selector": "2.*",
+                "symfony/dom-crawler": "2.*"
+            },
+            "bin": [
+                "sweet-qa"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Twogether\\SweetQA\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Checks a website for common mistakes",
+            "time": "2015-12-05 16:51:32"
         }
     ],
     "packages-dev": [
