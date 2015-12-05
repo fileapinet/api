@@ -22,7 +22,7 @@
         "mmoreram/gearman-bundle": "~2.4",
         "partnermarketing/file-system-bundle": "~0.2",
         "amyboyd/pgn-parser": "~0.2",
-        "amyboyd/history-bundle": "~0.0.3"
+        "amyboyd/history-bundle": "~0.0.4"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.8",
