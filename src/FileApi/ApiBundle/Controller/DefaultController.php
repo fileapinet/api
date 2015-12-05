@@ -158,6 +158,24 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/website-mistakes")
+     * @Method({"GET", "POST"})
+     */
+    public function websiteMistakesAction(SymfonyRequest $request)
+    {
+        $order = $this->getOrderFromRequest($request);
+
+        $dm = $this->container->get('doctrine_mongodb')->getManager();
+        $dm->persist($order);
+        $dm->flush();
+
+        $this->container->get('file_api_worker.website_mistakes_service')
+            ->checkUrl($order);
+
+        return new OrderViewToCustomer($order);
+    }
+
+    /**
      * @return \FileApi\ApiBundle\Document\Order
      */
     private function getOrderFromRequest(SymfonyRequest $request)

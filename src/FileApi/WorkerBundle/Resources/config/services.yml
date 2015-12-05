@@ -86,3 +86,9 @@ services:
             - @monolog.logger.detect_porn_worker
             - @partnermarketing_file_system.factory
             - %partnermarketing_file_system.tmp_dir%
+
+    file_api_worker.website_mistakes_service:
+        class: FileApi\WorkerBundle\Workers\WebsiteMistakesService
+        arguments:
+            - @doctrine_mongodb
+            - @monolog.logger.website_mistakes_service

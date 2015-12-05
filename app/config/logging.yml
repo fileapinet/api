@@ -11,6 +11,7 @@ monolog:
         - screenshot_web_page_worker
         - pgn_parser_worker
         - detect_porn_worker
+        - website_mistakes_service
 
     handlers:
         convert_image_worker:
@@ -68,3 +69,8 @@ monolog:
             path:       %kernel.logs_dir%/%kernel.environment%_detect_porn_worker.log
             level:      info
             channels:   ["detect_porn_worker"]
+        website_mistakes_service:
+            type:       stream
+            path:       %kernel.logs_dir%/%kernel.environment%_website_mistakes_service.log
+            level:      info
+            channels:   ["website_mistakes_service"]
